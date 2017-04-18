@@ -4,17 +4,22 @@ import (
 	"html/template"
 	"net/http"
 	"log"
+	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/csrf"
+	"io"
 )
 
-type Data struct {
+type ViewData struct {
 	ID string
 }
 
 func homeHandler(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := t.ExecuteTemplate(w, "index.html", nil)
+		err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+			csrf.TemplateTag: csrf.TemplateField(r),
+		})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
@@ -28,26 +33,51 @@ func viewHandler(t *template.Template) http.HandlerFunc {
 		if vars["id"] != "" {
 			id = vars["id"]
 		}
-		err := t.ExecuteTemplate(w, "view.html", &Data{ID: id})
+		err := t.ExecuteTemplate(w, "view.html", ViewData{
+			ID: id,
+		})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			log.Fatal(err)
+			return
 		}
 	}
 }
 
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(30000000)
+	file, handler, err := r.FormFile("")
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer file.Close()
+	log.Printf("%d", handler.Header)
 
+	name := generateName()
+	f, err := os.OpenFile("./images/" + name, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	defer f.Close()
+
+	io.Copy(f, file)
+}
+
+func generateName() string {
+	return "123"
 }
 
 func main() {
+	CSRF := csrf.Protect([]byte("62caed6a7842b5470c2e89693f92c9bab01219f8ebc0c9c0785b97cfd7a68187"))
+
 	r := mux.NewRouter()
-	indexTemplate := template.Must(template.ParseFiles("templates/index.html"))
-	viewTemplate := template.Must(template.ParseFiles("templates/view.html"))
+	templates := template.Must(template.ParseFiles("templates/*.html"))
 
-	r.HandleFunc("/", homeHandler(indexTemplate)).Methods("GET")
-	r.HandleFunc("/{id}/", viewHandler(viewTemplate)).Methods("GET")
-	r.HandleFunc("/upload/", uploadHandler).Methods("GET")
+	r.HandleFunc("/", homeHandler(templates)).Methods("GET")
+	r.HandleFunc("/{id}/", viewHandler(templates)).Methods("GET")
+	r.HandleFunc("/upload/", uploadHandler).Methods("POST")
 
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", CSRF(r)))
 }

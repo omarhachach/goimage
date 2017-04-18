@@ -4,5 +4,11 @@
         <meta charset="utf-8">
         <title>Hi</title>
     </head>
-    <body>hi</body>
+    <body>
+        <form action="/upload/" method="post" enctype="multipart/form-data">
+            <input type="file">
+            <input type="hidden" name="_csrf" value="{{}}"
+            <input type="submit">
+        </form>
+    </body>
 </html>
