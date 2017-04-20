@@ -3,12 +3,13 @@ package main
 import (
 	"html/template"
 	"net/http"
+	"net/textproto"
 	"log"
 	"os"
+	"io"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/csrf"
-	"io"
 )
 
 type ViewData struct {
@@ -17,6 +18,7 @@ type ViewData struct {
 
 func homeHandler(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-CSRF-Token", csrf.Token(r))
 		err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
 			csrf.TemplateTag: csrf.TemplateField(r),
 		})
@@ -46,7 +48,7 @@ func viewHandler(t *template.Template) http.HandlerFunc {
 
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(30000000)
-	file, handler, err := r.FormFile("")
+	file, handler, err := r.FormFile("file")
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -54,6 +56,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 	log.Printf("%d", handler.Header)
 
+	checkFileType(handler.Header)
 	name := generateName()
 	f, err := os.OpenFile("./images/" + name, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
@@ -65,15 +68,23 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	io.Copy(f, file)
 }
 
+func checkFileType(f textproto.MIMEHeader) string, error {
+
+}
+
 func generateName() string {
 	return "123"
 }
 
 func main() {
-	CSRF := csrf.Protect([]byte("62caed6a7842b5470c2e89693f92c9bab01219f8ebc0c9c0785b97cfd7a68187"))
-
+	CSRF := csrf.Protect(
+		[]byte("62caed6a7842b5470c2e89693f92c9bab01219f8ebc0c9c0785b97cfd7a68187"),
+		csrf.RequestHeader("X-CSRF-Token"),
+		csrf.FieldName("_csrf"),
+		csrf.Secure(false),
+	)
 	r := mux.NewRouter()
-	templates := template.Must(template.ParseFiles("templates/*.html"))
+	templates := template.Must(template.ParseGlob("templates/*.html"))
 
 	r.HandleFunc("/", homeHandler(templates)).Methods("GET")
 	r.HandleFunc("/{id}/", viewHandler(templates)).Methods("GET")
