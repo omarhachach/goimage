@@ -1,0 +1,27 @@
+{
+	"ImportPath": "goimage",
+	"GoVersion": "go1.8",
+	"GodepVersion": "v79",
+	"Deps": [
+		{
+			"ImportPath": "github.com/gorilla/csrf",
+			"Comment": "v1.5-3-g0790a82",
+			"Rev": "0790a82825913cb077e3eb4f446023f46c3e931d"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Comment": "v1.3.0-5-g599cba5",
+			"Rev": "599cba5e7b6137d46ddf58fb1765f5d928e69604"
+		},
+		{
+			"ImportPath": "github.com/gorilla/securecookie",
+			"Comment": "v1.1-6-ge59506c",
+			"Rev": "e59506cc896acb7f7bf732d4fdf5e25f7ccd8983"
+		},
+		{
+			"ImportPath": "github.com/pkg/errors",
+			"Comment": "v0.8.0-4-gff09b13",
+			"Rev": "ff09b135c25aae272398c51a07235b90a75aa4f0"
+		}
+	]
+}
