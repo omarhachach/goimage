@@ -1,5 +1,29 @@
 {
   "port": 8080,
   "secure": true,
-  "32-byte-auth-key": "62caed6a7842b5470c2e89693f92c9bab01219f8ebc0c9c0785b97cfd7a68187"
+  "32-byte-auth-key": "62caed6a7842b5470c2e89693f92c9bab01219f8ebc0c9c0785b97cfd7a68187",
+  "allowed-mime-types": [
+    "image/x-icon",
+    "image/jpeg",
+    "image/pjpeg",
+    "image/png",
+    "image/tiff",
+    "image/x-tiff",
+    "image/webp",
+    "image/gif"
+  ],
+  "allowed-extensions": [
+    ".png",
+    ".jpeg",
+    ".jpg",
+    ".jiff",
+    ".png",
+    ".ico",
+    ".gif",
+    ".tif",
+    ".webp"
+  ],
+  "max-file-size": 30000000,
+  "image-directory": "images/",
+  "template-directory": "templates/"
 }

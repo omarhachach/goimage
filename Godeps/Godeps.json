@@ -1,5 +1,5 @@
 {
-	"ImportPath": "goimage",
+	"ImportPath": "github.com/Omar-H/goimage",
 	"GoVersion": "go1.8",
 	"GodepVersion": "v79",
 	"Deps": [
