@@ -1,4 +1,4 @@
-##goimage - A simple image uploader/server
+## goimage - A simple image uploader/server
 
 [![Build Status](https://travis-ci.org/Omar-H/goimage.svg?branch=master)](https://travis-ci.org/Omar-H/goimage)
 
@@ -6,20 +6,20 @@ Goimage is a simple, fully functional, go server for handling image uploads. It 
 
 [Releases](https://github.com/Omar-H/goimage/releases) | [Docs](https://github.com/Omar-H/goimage/wiki)
 
-##Menu
+## Menu
 * [Features](#features)
 * [Getting Started](#getting-started)
 * [Benchmarks](#benchmarks)
 * [Running from Source](#running-from-source)
 * [Contributing](#contributing)
 
-##Features
+## Features
 * Simple and easy configuration
 * CSRF Protection
 * Performant and efficient
 * More coming soon..
 
-##Getting Started
+## Getting Started
 Create a config.json file in the root directory:
 ```JSON
 {
@@ -63,10 +63,10 @@ On a Windows machine, you would open a command prompt window, and run:
 C:\goimage-folder> goimage.exe
 ```
 
-##Benchmarks
+## Benchmarks
 Coming soon..
 
-##Running from Source
+## Running from Source
 You can do this two ways; either by using go get, or git clone.
 
 **Not recommended for production use.**
@@ -88,7 +88,7 @@ cd $GOPATH/src/github.com/Omar-H/goimage
 go run main.go
 ```
 
-##Contributing
+## Contributing
 Please check out our [wiki](https://github.com/Omar-H/goimage/wiki) for more information about contributing.
 
 You can contact the author on Discord: Omar H#6299 or email.
