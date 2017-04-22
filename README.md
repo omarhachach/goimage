@@ -20,6 +20,8 @@ Goimage is a simple, fully functional, go server for handling image uploads. It 
 * More coming soon..
 
 ## Getting Started
+Download the latest [release](https://github.com/Omar-H/goimage/releases) for your platform, and extract the files.
+
 Create a config.json file in the root directory:
 ```JSON
 {
