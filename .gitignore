@@ -1,4 +1,6 @@
 .idea/
 vendor/
-images/*
+images/
 goimage.exe
+goimage
+util/testing/

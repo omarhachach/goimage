@@ -44,10 +44,15 @@ func TestContains(t *testing.T) {
 }
 
 func TestCheckExists(t *testing.T) {
-	const dir string = "testdir/"
-	_, err := os.OpenFile(dir+"test.txt", os.O_WRONLY|os.O_CREATE, 0644)
+	const dir string = "testing/"
+	err := os.Mkdir(dir, 0777)
 	if err != nil {
-		t.Fatalf("Error creating test file and/or dir: \n%d", err)
+		t.Fatalf("Error creating dir: \n%d", err)
+	}
+
+	_, err = os.OpenFile(dir+"test.txt", os.O_WRONLY|os.O_CREATE, 0777)
+	if err != nil {
+		t.Fatalf("Error creating test file: \n%d", err)
 	}
 
 	tests := []struct {
@@ -72,8 +77,8 @@ func TestCheckExists(t *testing.T) {
 		}
 	}
 
-	err = os.RemoveAll(dir)
+	err = os.Remove(dir)
 	if err != nil {
-		t.Fatalf("Error removing test file and/or dir: \n%d", err)
+		t.Fatalf("Error removing dir: \n%d", err)
 	}
 }

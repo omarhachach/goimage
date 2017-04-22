@@ -1,12 +1,12 @@
 language: go
 
-env:
-  - GIMME_OS=linux GIMME_ARCH=amd64
-  - GIMME_OS=darwin GIMME_ARCH=amd64
-  - GIMME_OS=windows GIMME_ARCH=amd64
+os:
+  - linux
+  - windows
+  - os_x
 
 go:
-  - master
+  - 1.8.x
   - 1.7
   - 1.6
 
@@ -18,4 +18,6 @@ before_script:
   - go fmt
   - go fmt github.com/Omar-H/goimage/util
 
-script: go test && go test github.com/Omar-H/goimage/util
+script:
+  - go test
+  - go test github.com/Omar-H/goimage/util
