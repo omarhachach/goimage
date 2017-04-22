@@ -1,14 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/textproto"
 	"os"
-	"io/ioutil"
-	"encoding/json"
 	"strconv"
 
 	"github.com/Omar-H/goimage/util"
@@ -21,14 +21,14 @@ type ViewData struct {
 }
 
 type Config struct {
-	Port int `json:"port"`
-	Secure bool `json:"secure"`
-	AuthKey string `json:"32-byte-auth-key"`
-	AllowedMimeTypes []string `json:"allowed-mime-types"`
+	Port              int      `json:"port"`
+	Secure            bool     `json:"secure"`
+	AuthKey           string   `json:"32-byte-auth-key"`
+	AllowedMimeTypes  []string `json:"allowed-mime-types"`
 	AllowedExtensions []string `json:"allowed-extensions"`
-	MaxFileSize int64 `json:"max-file-size"`
-	ImageDirectory string `json:"image-directory"`
-	TemplateDirectory string `json:"template-directory"`
+	MaxFileSize       int64    `json:"max-file-size"`
+	ImageDirectory    string   `json:"image-directory"`
+	TemplateDirectory string   `json:"template-directory"`
 }
 
 var config Config
@@ -54,7 +54,7 @@ func main() {
 	r.HandleFunc("/{id}/", ViewHandler(templates)).Methods("GET")
 	r.HandleFunc("/upload/", UploadHandler).Methods("POST")
 
-	log.Fatal(http.ListenAndServe(":" + strconv.Itoa(config.Port), CSRF(r)))
+	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(config.Port), CSRF(r)))
 }
 
 func HomeHandler(t *template.Template) http.HandlerFunc {
@@ -102,7 +102,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	name := GenerateName(5)
-	f, err := os.OpenFile(config.ImageDirectory + name + util.GetFileExt(handler.Header["Content-Disposition"][0]), os.O_WRONLY|os.O_CREATE, 0644)
+	f, err := os.OpenFile(config.ImageDirectory+name+util.GetFileExt(handler.Header["Content-Disposition"][0]), os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -110,10 +110,8 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	defer f.Close()
 
 	io.Copy(f, file)
-	http.Redirect(w, r, "/" + name + "/", http.StatusSeeOther)
+	http.Redirect(w, r, "/"+name+"/", http.StatusSeeOther)
 }
-
-
 
 func CheckFileType(f textproto.MIMEHeader) bool {
 	ext := util.GetFileExt(f["Content-Disposition"][0])

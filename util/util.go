@@ -2,20 +2,18 @@ package util
 
 import (
 	"io/ioutil"
+	"math/rand"
+	"path/filepath"
 	"strings"
 	"time"
-	"path/filepath"
-	"math/rand"
 )
 
 const (
-	letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+	letterBytes   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 	letterIdxBits = 6
-	letterIdxMask = 1 << letterIdxBits - 1
+	letterIdxMask = 1<<letterIdxBits - 1
 	letterIdxMax  = 63 / letterIdxBits
 )
-
-
 
 func Contains(s []string, e string) bool {
 	for _, a := range s {
