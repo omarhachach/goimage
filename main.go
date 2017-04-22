@@ -29,6 +29,7 @@ type Config struct {
 	MaxFileSize       int64    `json:"max-file-size"`
 	ImageDirectory    string   `json:"image-directory"`
 	TemplateDirectory string   `json:"template-directory"`
+	CSRF              bool     `json:"csrf"`
 }
 
 var config Config
@@ -50,22 +51,38 @@ func main() {
 	r := mux.NewRouter()
 	templates := template.Must(template.ParseGlob(config.TemplateDirectory + "*.html"))
 
+	os.Mkdir(config.ImageDirectory, 644)
+	os.Mkdir(config.TemplateDirectory, 644)
+
 	r.HandleFunc("/", HomeHandler(templates)).Methods("GET")
 	r.HandleFunc("/{id}/", ViewHandler(templates)).Methods("GET")
 	r.HandleFunc("/upload/", UploadHandler).Methods("POST")
 
-	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(config.Port), CSRF(r)))
-	log.Printf("Listening on port: %d", config.Port)
+	log.Print("Listening on port: " + strconv.Itoa(config.Port))
+	if config.CSRF {
+		log.Fatal(http.ListenAndServe(":"+strconv.Itoa(config.Port), CSRF(r)))
+	} else {
+		log.Fatal(http.ListenAndServe(":"+strconv.Itoa(config.Port), r))
+	}
 }
 
 func HomeHandler(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("X-CSRF-Token", csrf.Token(r))
-		err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
-			csrf.TemplateTag: csrf.TemplateField(r),
-		})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+		if config.CSRF {
+			w.Header().Set("X-CSRF-Token", csrf.Token(r))
+			err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+				csrf.TemplateTag: csrf.TemplateField(r),
+			})
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
+		} else {
+			err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+				csrf.TemplateTag: "",
+			})
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+			}
 		}
 	}
 }
