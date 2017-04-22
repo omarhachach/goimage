@@ -2,8 +2,11 @@ package util
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"testing"
+	"unicode/utf8"
 )
 
 func TestContains(t *testing.T) {
@@ -30,7 +33,7 @@ func TestContains(t *testing.T) {
 				"barfoo",
 			},
 			"test",
-			true,
+			false,
 		},
 	}
 
@@ -44,15 +47,23 @@ func TestContains(t *testing.T) {
 }
 
 func TestCheckExists(t *testing.T) {
-	const dir string = "testing/"
-	err := os.Mkdir(dir, 0777)
+	content := []byte("temporary file's content")
+	dir, err := ioutil.TempDir("", "testing")
 	if err != nil {
-		t.Fatalf("Error creating dir: \n%d", err)
+		t.Fatalf("Error creating tempdir: \n%d", err)
 	}
 
-	_, err = os.OpenFile(dir+"test.txt", os.O_WRONLY|os.O_CREATE, 0777)
+	tmpfile, err := ioutil.TempFile(dir, "test")
 	if err != nil {
-		t.Fatalf("Error creating test file: \n%d", err)
+		log.Fatal(err)
+	}
+
+	defer os.Remove(tmpfile.Name())
+	if _, err := tmpfile.Write(content); err != nil {
+		log.Fatal(err)
+	}
+	if err := tmpfile.Close(); err != nil {
+		log.Fatal(err)
 	}
 
 	tests := []struct {
@@ -76,9 +87,52 @@ func TestCheckExists(t *testing.T) {
 			t.Errorf(errorPrefix+"Expected %d, got %d", test.expected, actual)
 		}
 	}
+}
 
-	err = os.Remove(dir)
-	if err != nil {
-		t.Fatalf("Error removing dir: \n%d", err)
+func TestGenerateName(t *testing.T) {
+	tests := []struct {
+		length int
+	}{
+		{
+			4,
+		},
+		{
+			6,
+		},
+		{
+			9,
+		},
+	}
+
+	for i, test := range tests {
+		errorPrefix := fmt.Sprintf("Test [%d]: ", i)
+		actual := GenerateName(test.length)
+		if utf8.RuneCountInString(actual) != test.length {
+			t.Errorf(errorPrefix+"Expected length of %d, got %d (%d)", test.length, utf8.RuneCountInString(actual), actual)
+		}
+	}
+}
+
+func TestGetFileExt(t *testing.T) {
+	tests := []struct {
+		string   string
+		expected string
+	}{
+		{
+			"form-data; name=\"file\"; filename=\"bluelogo.png\"",
+			".png",
+		},
+		{
+			"form-data; name=\"file\"; filename=\"bluelogo.jpeg\"",
+			".jpeg",
+		},
+	}
+
+	for i, test := range tests {
+		errorPrefix := fmt.Sprintf("Test [%d]: ", i)
+		actual := GetFileExt(test.string)
+		if actual != test.expected {
+			t.Errorf(errorPrefix+"Expected %d, got %d", test.expected, actual)
+		}
 	}
 }
