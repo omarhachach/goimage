@@ -76,6 +76,7 @@ You can do this two ways; either by using go get, or git clone.
 Note: Requires Go installed on the system.
 
 **Git Clone**
+
 ```BASH
 git clone https://github.com/Omar-H/goimage.git
 cd goimage/
@@ -83,6 +84,7 @@ go run main.go
 ```
 
 **Go Get**
+
 Note: You need to have GOPATH set.
 ```BASH
 go get github.com/Omar-H/goimage
@@ -96,4 +98,4 @@ Please check out our [wiki](https://github.com/Omar-H/goimage/wiki) for more inf
 You can contact the author on Discord: Omar H#6299 or via email: [contact@omarh.net](mailto:contact@omarh.net).
 
 If you feel something is missing, or you find a bug, you can feel free to open an issue or a pull request.
-We will check your issue as soon as possible.
+We will check your issue or pull request as soon as possible.
