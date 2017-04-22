@@ -51,7 +51,8 @@ Create a config.json file in the root directory:
   ],
   "max-file-size": 30000000,
   "image-directory": "images/",
-  "template-directory": "templates/"
+  "template-directory": "templates/",
+  "csrf": false
 }
 ```
 
