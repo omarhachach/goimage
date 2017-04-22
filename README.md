@@ -93,7 +93,7 @@ go run main.go
 ## Contributing
 Please check out our [wiki](https://github.com/Omar-H/goimage/wiki) for more information about contributing.
 
-You can contact the author on Discord: Omar H#6299 or email.
+You can contact the author on Discord: Omar H#6299 or via email: [contact@omarh.net](mailto:contact@omarh.net).
 
 If you feel something is missing, or you find a bug, you can feel free to open an issue or a pull request.
 We will check your issue as soon as possible.
