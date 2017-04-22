@@ -55,6 +55,7 @@ func main() {
 	r.HandleFunc("/upload/", UploadHandler).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(config.Port), CSRF(r)))
+	log.Printf("Listening on port: %d", config.Port)
 }
 
 func HomeHandler(t *template.Template) http.HandlerFunc {
