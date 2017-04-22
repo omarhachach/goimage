@@ -1,0 +1,23 @@
+language: go
+
+os:
+  - linux
+  - windows
+  - os_x
+
+go:
+  - 1.8.x
+  - 1.7
+  - 1.6
+
+install:
+  - go get github.com/gorilla/mux
+  - go get github.com/gorilla/csrf
+
+before_script:
+  - go fmt
+  - go fmt github.com/Omar-H/goimage/util
+
+script:
+  - go test
+  - go test github.com/Omar-H/goimage/util
