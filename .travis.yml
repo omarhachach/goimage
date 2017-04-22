@@ -10,6 +10,9 @@ go:
   - 1.7
   - 1.6
 
+cache:
+  - go get
+
 install:
   - go get github.com/gorilla/mux
   - go get github.com/gorilla/csrf
