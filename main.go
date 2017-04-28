@@ -29,6 +29,7 @@ type Config struct {
 	MaxFileSize       int64    `json:"max-file-size"`
 	ImageDirectory    string   `json:"image-directory"`
 	TemplateDirectory string   `json:"template-directory"`
+	PublicDirectory   string   `json:"public-directory"`
 	CSRF              bool     `json:"csrf"`
 }
 
@@ -54,9 +55,9 @@ func main() {
 	os.Mkdir(config.ImageDirectory, 644)
 	os.Mkdir(config.TemplateDirectory, 644)
 
-	r.HandleFunc("/", HomeHandler(templates)).Methods("GET")
 	r.HandleFunc("/{id}/", ViewHandler(templates)).Methods("GET")
 	r.HandleFunc("/upload/", UploadHandler).Methods("POST")
+	r.PathPrefix("/").HandlerFunc(HomeHandler(templates)).Methods("GET")
 
 	log.Print("Listening on port: " + strconv.Itoa(config.Port))
 	if config.CSRF {
@@ -68,22 +69,32 @@ func main() {
 
 func HomeHandler(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if config.CSRF {
-			w.Header().Set("X-CSRF-Token", csrf.Token(r))
-			err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
-				csrf.TemplateTag: csrf.TemplateField(r),
-			})
-			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+		switch url := r.URL.Path; url {
+		case "/":
+			if config.CSRF {
+				w.Header().Set("X-CSRF-Token", csrf.Token(r))
+				err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+					csrf.TemplateTag: csrf.TemplateField(r),
+				})
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+				}
+			} else {
+				err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
+					csrf.TemplateTag: "",
+				})
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+				}
 			}
-		} else {
-			err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
-				csrf.TemplateTag: "",
-			})
-			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+		default:
+			if _, err := os.Stat(config.PublicDirectory + url); err != nil {
+				http.ServeFile(w, r, config.TemplateDirectory+"404.html")
+			} else {
+				http.ServeFile(w, r, config.PublicDirectory+url)
 			}
 		}
+
 	}
 }
 
