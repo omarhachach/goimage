@@ -25,34 +25,35 @@ Download the latest [release](https://github.com/Omar-H/goimage/releases) for yo
 Create a config.json file in the root directory:
 ```JSON
 {
-  "port": 8080,
-  "secure": true,
-  "32-byte-auth-key": "<32-byte-auth-key-for-csrf>",
-  "allowed-mime-types": [
-    "image/x-icon",
-    "image/jpeg",
-    "image/pjpeg",
-    "image/png",
-    "image/tiff",
-    "image/x-tiff",
-    "image/webp",
-    "image/gif"
-  ],
-  "allowed-extensions": [
-    ".png",
-    ".jpeg",
-    ".jpg",
-    ".jiff",
-    ".png",
-    ".ico",
-    ".gif",
-    ".tif",
-    ".webp"
-  ],
-  "max-file-size": 30000000,
-  "image-directory": "images/",
-  "template-directory": "templates/",
-  "csrf": false
+    "port": 8080,
+    "secure": false,
+    "32-byte-auth-key": "62caed6a7842b5470c2e89693f92c9bab01219f8ebc0c9c0785b97cfd7a68187",
+    "allowed-mime-types": [
+        "image/x-icon",
+        "image/jpeg",
+        "image/pjpeg",
+        "image/png",
+        "image/tiff",
+        "image/x-tiff",
+        "image/webp",
+        "image/gif"
+    ],
+    "allowed-extensions": [
+        ".png",
+        ".jpeg",
+        ".jpg",
+        ".jiff",
+        ".png",
+        ".ico",
+        ".gif",
+        ".tif",
+        ".webp"
+    ],
+    "max-file-size": 30000000,
+    "image-directory": "public/i/",
+    "template-directory": "templates/",
+    "public-directory": "public/",
+    "csrf": false
 }
 ```
 
