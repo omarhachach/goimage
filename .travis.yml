@@ -6,21 +6,20 @@ os:
   - os_x
 
 go:
-  - 1.8.x
+  - 1.8
   - 1.7
   - 1.6
-
-cache:
-  - go get
 
 install:
   - go get github.com/gorilla/mux
   - go get github.com/gorilla/csrf
 
 before_script:
-  - go fmt
+  - go fmt github.com/Omar-H/goimage
   - go fmt github.com/Omar-H/goimage/util
 
 script:
-  - go test
+  - go test github.com/Omar-H/goimage
   - go test github.com/Omar-H/goimage/util
+  - go build github.com/Omar-H/goimage
+  - go build github.com/Omar-H/goimage/util
