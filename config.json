@@ -23,6 +23,7 @@
     ".tif",
     ".webp"
   ],
+  "image-name-length": 4,
   "max-file-size": 30000000,
   "image-directory": "public/i/",
   "template-directory": "templates/",

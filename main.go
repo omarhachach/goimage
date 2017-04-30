@@ -30,6 +30,7 @@ type Config struct {
 	AuthKey           string   `json:"32-byte-auth-key"`
 	AllowedMimeTypes  []string `json:"allowed-mime-types"`
 	AllowedExtensions []string `json:"allowed-extensions"`
+	ImageNameLength   int      `json:"image-name-length"`
 	MaxFileSize       int64    `json:"max-file-size"`
 	ImageDirectory    string   `json:"image-directory"`
 	TemplateDirectory string   `json:"template-directory"`
@@ -163,7 +164,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	name := GenerateName(5)
+	name := GenerateName(config.ImageNameLength)
 	f, err := os.OpenFile(config.ImageDirectory+name+util.GetFileExt(handler.Header["Content-Disposition"][0]), os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		log.Fatal(err)
