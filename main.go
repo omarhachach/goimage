@@ -151,7 +151,7 @@ func ViewHandler(t *template.Template) http.HandlerFunc {
 // image to the ImageDirectory defined
 // in the config.json
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(config.MaxFileSize)
+	r.ParseMultipartForm(30000000)
 	file, handler, err := r.FormFile("file")
 	if err != nil {
 		log.Fatal(err)
@@ -170,10 +170,23 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 		return
 	}
-	defer f.Close()
 
 	io.Copy(f, file)
-	http.Redirect(w, r, "/"+name+"/", http.StatusSeeOther)
+	fStat, err := f.Stat()
+	if err != nil {
+		log.Fatal(err)
+	}
+	size := fStat.Size()
+	if size > config.MaxFileSize {
+		f.Close()
+		err = os.RemoveAll(config.ImageDirectory + name + util.GetFileExt(handler.Header["Content-Disposition"][0]))
+		if err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		http.Redirect(w, r, "/"+name+"/", http.StatusSeeOther)
+		f.Close()
+	}
 }
 
 // CheckFileType checks if the uploaded
