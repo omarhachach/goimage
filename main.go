@@ -57,15 +57,15 @@ func main() {
 	r := mux.NewRouter()
 	err = os.MkdirAll(config.TemplateDirectory, 644)
 	if err != nil {
-		log.Fatal("Unable to crate Template Directory")
+		log.Fatal("Unable to create Template Directory")
 	}
 	err = os.MkdirAll(config.PublicDirectory, 644)
 	if err != nil {
-		log.Fatal("Unable to crate Public Directory")
+		log.Fatal("Unable to create Public Directory")
 	}
 	err = os.MkdirAll(config.ImageDirectory, 644)
 	if err != nil {
-		log.Fatal("Unable to crate Image Directory")
+		log.Fatal("Unable to create Image Directory")
 	}
 
 	templates := template.Must(template.ParseGlob(config.TemplateDirectory + "*.html"))
