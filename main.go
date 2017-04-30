@@ -16,10 +16,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Data parsed to the ViewHandler's template
 type ViewData struct {
 	Id string
 }
 
+// Parsed JSON config
 type Config struct {
 	Port              int      `json:"port"`
 	Secure            bool     `json:"secure"`
@@ -57,7 +59,7 @@ func main() {
 
 	r.HandleFunc("/{id}/", ViewHandler(templates)).Methods("GET")
 	r.HandleFunc("/upload/", UploadHandler).Methods("POST")
-	r.PathPrefix("/").HandlerFunc(HomeHandler(templates)).Methods("GET")
+	r.PathPrefix("/").HandlerFunc(RootHandler(templates)).Methods("GET")
 
 	log.Print("Listening on port: " + strconv.Itoa(config.Port))
 	if config.CSRF {
@@ -67,7 +69,10 @@ func main() {
 	}
 }
 
-func HomeHandler(t *template.Template) http.HandlerFunc {
+// RootHandler handles the root route.
+// This includes the homepage and the
+// file system.
+func RootHandler(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch url := r.URL.Path; url {
 		case "/":
@@ -98,6 +103,13 @@ func HomeHandler(t *template.Template) http.HandlerFunc {
 	}
 }
 
+// Handles the ability to view your image.
+// It checks if the file exists, and returns
+// an appropriate response.
+//
+// If the image exists, it serves a template
+// which is defined in
+// TemplateDirectory/view.html.
 func ViewHandler(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -116,6 +128,10 @@ func ViewHandler(t *template.Template) http.HandlerFunc {
 	}
 }
 
+// Handles the upload route.
+// It checks the file, and uploads the
+// image to the ImageDirectory defined
+// in the config.json
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(config.MaxFileSize)
 	file, handler, err := r.FormFile("file")
@@ -142,6 +158,11 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/"+name+"/", http.StatusSeeOther)
 }
 
+// CheckFileType checks if the uploaded
+// file's extension is allowed.
+// It accepts a textproto.MIMEHeader
+// which is recieved from the http.Request
+// FormFile function, as the handler.Header
 func CheckFileType(f textproto.MIMEHeader) bool {
 	ext := util.GetFileExt(f["Content-Disposition"][0])
 
@@ -152,6 +173,10 @@ func CheckFileType(f textproto.MIMEHeader) bool {
 	return true
 }
 
+// GenerateName generates a name with
+// a specified length, and checks if
+// the name already exists, using the
+// util functions for this.
 func GenerateName(n int) string {
 	name := util.GenerateName(n)
 
