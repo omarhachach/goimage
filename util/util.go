@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// Variables used for the GenerateName function
 const (
 	letterBytes   = "abcdefghijklmnopqrstuvwxyz1234567890"
 	letterIdxBits = 6
@@ -15,6 +16,7 @@ const (
 	letterIdxMax  = 63 / letterIdxBits
 )
 
+// Checks if a string slice contains a string
 func Contains(s []string, e string) bool {
 	for _, a := range s {
 		if a == e {
@@ -24,6 +26,14 @@ func Contains(s []string, e string) bool {
 	return false
 }
 
+// Checks if the filename already exists in
+// a directory.
+//
+// NOTE: THIS IS GLOB-LIKE AND WILL CHECK IF
+// THE DIRECTORY CONTAINS A FILE, WHICH CONTAINS
+// THE "name" STRING.
+// IT IS EXPLICITLY MADE TO BE USED BY THE
+// goimage PROGRAM
 func CheckExists(name string, dir string) bool {
 	files, _ := ioutil.ReadDir(dir)
 	for _, f := range files {
@@ -34,6 +44,7 @@ func CheckExists(name string, dir string) bool {
 	return false
 }
 
+// Generates a name of a specified length
 func GenerateName(n int) string {
 	var src = rand.NewSource(time.Now().UnixNano())
 
@@ -53,6 +64,12 @@ func GenerateName(n int) string {
 	return string(b)
 }
 
+// Gets the file extension from the specified string
+//
+// NOTE: CHECKS A VERY SPECIFIC STRING (http.Request
+// FileForm handler.Header["Content-Disposition"][0])
+// AND IT IS EXPLICITLY USED TO BE USED BY THE
+// goimage PROGRAM
 func GetFileExt(s string) string {
 	Ext := strings.Split(s, ";")
 	var ext string
