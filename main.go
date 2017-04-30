@@ -141,6 +141,8 @@ func ViewHandler(t *template.Template) http.HandlerFunc {
 				return
 			}
 		} else {
+			w.Header().Add("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusBadRequest)
 			http.ServeFile(w, r, config.TemplateDirectory+"404.html")
 		}
 	}
@@ -183,8 +185,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		http.ServeFile(w, r, config.TemplateDirectory+"400.html")
-		w.WriteHeader(http.StatusBadRequest)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	} else {
 		http.Redirect(w, r, "/"+name+"/", http.StatusSeeOther)
 		f.Close()
