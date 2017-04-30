@@ -142,7 +142,7 @@ func ViewHandler(t *template.Template) http.HandlerFunc {
 			}
 		} else {
 			w.Header().Add("Content-Type", "text/html; charset=utf-8")
-			w.WriteHeader(http.StatusBadRequest)
+			w.WriteHeader(http.StatusNotFound)
 			http.ServeFile(w, r, config.TemplateDirectory+"404.html")
 		}
 	}
