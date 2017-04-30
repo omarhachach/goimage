@@ -2,6 +2,7 @@ package util
 
 import (
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"path/filepath"
 	"strings"
@@ -62,6 +63,23 @@ func GenerateName(n int) string {
 	}
 
 	return string(b)
+}
+
+// This function reads a directory, and gets
+// the extension from the file which matches
+// the name string (Glob code: *name*).
+// Returns empty string on no results.
+func GetFileExtFromDir(name string, dir string) string {
+	files, err := ioutil.ReadDir(dir)
+	if err != nil {
+		log.Fatalf("Error reading from directory (%d)", dir)
+	}
+	for _, f := range files {
+		if strings.Contains(f.Name(), name) {
+			return filepath.Ext(f.Name())
+		}
+	}
+	return ""
 }
 
 // Gets the file extension from the specified string
