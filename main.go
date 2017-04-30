@@ -20,6 +20,7 @@ import (
 type ViewData struct {
 	Id       string
 	ImageUrl string
+	Ext      string
 }
 
 // Parsed JSON config
@@ -132,6 +133,7 @@ func ViewHandler(t *template.Template) http.HandlerFunc {
 		err := t.ExecuteTemplate(w, "view.html", ViewData{
 			Id:       id,
 			ImageUrl: config.ImageUrl,
+			Ext:      "",
 		})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
