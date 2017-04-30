@@ -183,7 +183,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		http.ServeFile(w, r, config.TemplateDirectory+"404.html")
+		http.ServeFile(w, r, config.TemplateDirectory+"400.html")
 		w.WriteHeader(http.StatusBadRequest)
 	} else {
 		http.Redirect(w, r, "/"+name+"/", http.StatusSeeOther)
