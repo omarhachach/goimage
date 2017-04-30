@@ -2,13 +2,41 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>Hi</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="goimage is a simple fully functional image server written in Go.">
+        <meta name="keywords" content="go, golang, image-upload, image-uploader, image-server">
+        <title>goimage | A simple image uploader/server</title>
+        <style>
+            #file {
+                display: none;
+            }
+
+            img {
+                height: 200px;
+                width: auto;
+                display: block;
+                margin: calc(50vh - 150px) auto 0;
+                transition: transform .2s ease-in-out;
+            }
+
+            img:hover {
+                transform: scale(1.1);
+            }
+        </style>
     </head>
     <body>
-        <form action="/upload/" method="post" enctype="multipart/form-data">
-            <input type="file" name="file">
-            {{ .csrfField }}
-            <input type="submit">
+        <form id="form" action="/upload/" method="post" enctype="multipart/form-data">
+            {{.csrfField}}
+            <label for="file">
+                <img src="https://static.omarh.net/goimage/uploadimage.svg" alt="Upload Image">
+            </label>
+            <input class="" id="file" type="file" name="file" accept="image/*" autocomplete="off">
         </form>
+        <script>
+            document.getElementById("file").onchange = function() {
+                document.getElementById("form").submit();
+            };
+        </script>
     </body>
 </html>
