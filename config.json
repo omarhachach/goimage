@@ -27,5 +27,6 @@
   "image-directory": "public/i/",
   "template-directory": "templates/",
   "public-directory": "public/",
+  "image-url": "i/",
   "csrf": false
 }
