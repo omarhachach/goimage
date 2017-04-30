@@ -197,7 +197,7 @@ func CheckFileType(f textproto.MIMEHeader) bool {
 func GenerateName(n int) string {
 	name := util.GenerateName(n)
 
-	for util.CheckExists(name, "images/") {
+	for util.CheckExists(name, config.ImageDirectory) {
 		name = util.GenerateName(n)
 	}
 
