@@ -113,6 +113,58 @@ func TestGenerateName(t *testing.T) {
 	}
 }
 
+func TestGetFileExtFromDir(t *testing.T) {
+	err := os.Mkdir("testing", 0777)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = os.OpenFile("testing/png.png", os.O_RDWR|os.O_CREATE, 0777)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, err = os.OpenFile("testing/jpeg.jpeg", os.O_RDWR|os.O_CREATE, 0777)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name     string
+		dir      string
+		expected string
+	}{
+		{
+			"png",
+			"testing/",
+			".png",
+		},
+		{
+			"jpeg",
+			"testing/",
+			".jpeg",
+		},
+		{
+			"gif",
+			"testing/",
+			"",
+		},
+	}
+
+	for i, test := range tests {
+		errorPrefix := fmt.Sprintf("Test [%d]: ", i)
+		actual := GetFileExtFromDir(test.name, test.dir)
+		if actual != test.expected {
+			t.Errorf(errorPrefix+"Expected %d, got %d", test.expected, actual)
+		}
+	}
+
+	os.RemoveAll("testing/png.png")
+	os.RemoveAll("testing/jpeg.jpeg")
+	err = os.RemoveAll("testing")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 func TestGetFileExt(t *testing.T) {
 	tests := []struct {
 		string   string

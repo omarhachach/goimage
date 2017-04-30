@@ -126,19 +126,21 @@ func RootHandler(t *template.Template) http.HandlerFunc {
 func ViewHandler(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		id := ""
-		if vars["id"] != "" {
-			id = vars["id"]
-		}
-		err := t.ExecuteTemplate(w, "view.html", ViewData{
-			Id:       id,
-			ImageUrl: config.ImageUrl,
-			Ext:      "",
-		})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Fatal(err)
-			return
+		id := vars["id"]
+		ext := util.GetFileExtFromDir(id, config.ImageDirectory)
+		if ext != "" {
+			err := t.ExecuteTemplate(w, "view.html", ViewData{
+				Id:       id,
+				ImageUrl: config.ImageUrl,
+				Ext:      ext,
+			})
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				log.Fatal(err)
+				return
+			}
+		} else {
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
 	}
 }
