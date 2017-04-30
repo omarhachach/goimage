@@ -140,7 +140,7 @@ func ViewHandler(t *template.Template) http.HandlerFunc {
 				return
 			}
 		} else {
-			http.Redirect(w, r, "/", http.StatusSeeOther)
+			http.ServeFile(w, r, config.TemplateDirectory+"404.html")
 		}
 	}
 }
