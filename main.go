@@ -52,10 +52,20 @@ func main() {
 		csrf.Secure(config.Secure),
 	)
 	r := mux.NewRouter()
-	templates := template.Must(template.ParseGlob(config.TemplateDirectory + "*.html"))
+	err = os.MkdirAll(config.TemplateDirectory, 644)
+	if err != nil {
+		log.Fatal("Unable to crate Template Directory")
+	}
+	err = os.MkdirAll(config.PublicDirectory, 644)
+	if err != nil {
+		log.Fatal("Unable to crate Public Directory")
+	}
+	err = os.MkdirAll(config.ImageDirectory, 644)
+	if err != nil {
+		log.Fatal("Unable to crate Image Directory")
+	}
 
-	os.Mkdir(config.ImageDirectory, 644)
-	os.Mkdir(config.TemplateDirectory, 644)
+	templates := template.Must(template.ParseGlob(config.TemplateDirectory + "*.html"))
 
 	r.HandleFunc("/{id}/", ViewHandler(templates)).Methods("GET")
 	r.HandleFunc("/upload/", UploadHandler).Methods("POST")
