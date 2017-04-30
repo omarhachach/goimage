@@ -53,6 +53,7 @@ Create a config.json file in the root directory:
     "image-directory": "public/i/",
     "template-directory": "templates/",
     "public-directory": "public/",
+    "image-url": "/i/",
     "csrf": false
 }
 ```

@@ -18,7 +18,9 @@ import (
 
 // Data parsed to the ViewHandler's template
 type ViewData struct {
-	Id string
+	Id       string
+	ImageUrl string
+	Ext      string
 }
 
 // Parsed JSON config
@@ -32,6 +34,7 @@ type Config struct {
 	ImageDirectory    string   `json:"image-directory"`
 	TemplateDirectory string   `json:"template-directory"`
 	PublicDirectory   string   `json:"public-directory"`
+	ImageUrl          string   `json:"image-url"`
 	CSRF              bool     `json:"csrf"`
 }
 
@@ -128,7 +131,9 @@ func ViewHandler(t *template.Template) http.HandlerFunc {
 			id = vars["id"]
 		}
 		err := t.ExecuteTemplate(w, "view.html", ViewData{
-			Id: id,
+			Id:       id,
+			ImageUrl: config.ImageUrl,
+			Ext:      "",
 		})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
