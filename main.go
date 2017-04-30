@@ -74,7 +74,7 @@ func main() {
 	r.HandleFunc("/upload/", UploadHandler).Methods("POST")
 	r.PathPrefix("/").HandlerFunc(RootHandler(templates)).Methods("GET")
 
-	log.Print("Listening on port: " + strconv.Itoa(config.Port))
+	log.Print("Listening on port " + strconv.Itoa(config.Port))
 	if config.CSRF {
 		log.Fatal(http.ListenAndServe(":"+strconv.Itoa(config.Port), CSRF(r)))
 	} else {

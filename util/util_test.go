@@ -62,7 +62,7 @@ func TestCheckExists(t *testing.T) {
 	if _, err := tmpfile.Write(content); err != nil {
 		log.Fatal(err)
 	}
-	if err := tmpfile.Close(); err != nil {
+	if err = tmpfile.Close(); err != nil {
 		log.Fatal(err)
 	}
 

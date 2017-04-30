@@ -36,7 +36,10 @@ func Contains(s []string, e string) bool {
 // IT IS EXPLICITLY MADE TO BE USED BY THE
 // goimage PROGRAM
 func CheckExists(name string, dir string) bool {
-	files, _ := ioutil.ReadDir(dir)
+	files, err := ioutil.ReadDir(dir)
+	if err != nil {
+		log.Fatal(err)
+	}
 	for _, f := range files {
 		if strings.Contains(f.Name(), name) {
 			return true
