@@ -108,6 +108,8 @@ func RootHandler(t *template.Template) http.HandlerFunc {
 			}
 		default:
 			if _, err := os.Stat(config.PublicDirectory + url); err != nil {
+				w.Header().Add("Content-Type", "text/html; charset=utf-8")
+				w.WriteHeader(http.StatusNotFound)
 				http.ServeFile(w, r, config.TemplateDirectory+"404.html")
 			} else {
 				http.ServeFile(w, r, config.PublicDirectory+url)
