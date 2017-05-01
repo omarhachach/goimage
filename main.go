@@ -18,7 +18,9 @@ import (
 
 // Data parsed to the ViewHandler's template
 type ViewData struct {
-	Id string
+	Id       string
+	ImageUrl string
+	Ext      string
 }
 
 // Parsed JSON config
@@ -28,10 +30,12 @@ type Config struct {
 	AuthKey           string   `json:"32-byte-auth-key"`
 	AllowedMimeTypes  []string `json:"allowed-mime-types"`
 	AllowedExtensions []string `json:"allowed-extensions"`
+	ImageNameLength   int      `json:"image-name-length"`
 	MaxFileSize       int64    `json:"max-file-size"`
 	ImageDirectory    string   `json:"image-directory"`
 	TemplateDirectory string   `json:"template-directory"`
 	PublicDirectory   string   `json:"public-directory"`
+	ImageUrl          string   `json:"image-url"`
 	CSRF              bool     `json:"csrf"`
 }
 
@@ -54,15 +58,15 @@ func main() {
 	r := mux.NewRouter()
 	err = os.MkdirAll(config.TemplateDirectory, 644)
 	if err != nil {
-		log.Fatal("Unable to crate Template Directory")
+		log.Fatal("Unable to create Template Directory")
 	}
 	err = os.MkdirAll(config.PublicDirectory, 644)
 	if err != nil {
-		log.Fatal("Unable to crate Public Directory")
+		log.Fatal("Unable to create Public Directory")
 	}
 	err = os.MkdirAll(config.ImageDirectory, 644)
 	if err != nil {
-		log.Fatal("Unable to crate Image Directory")
+		log.Fatal("Unable to create Image Directory")
 	}
 
 	templates := template.Must(template.ParseGlob(config.TemplateDirectory + "*.html"))
@@ -71,7 +75,7 @@ func main() {
 	r.HandleFunc("/upload/", UploadHandler).Methods("POST")
 	r.PathPrefix("/").HandlerFunc(RootHandler(templates)).Methods("GET")
 
-	log.Print("Listening on port: " + strconv.Itoa(config.Port))
+	log.Print("Listening on port " + strconv.Itoa(config.Port))
 	if config.CSRF {
 		log.Fatal(http.ListenAndServe(":"+strconv.Itoa(config.Port), CSRF(r)))
 	} else {
@@ -123,17 +127,23 @@ func RootHandler(t *template.Template) http.HandlerFunc {
 func ViewHandler(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		id := ""
-		if vars["id"] != "" {
-			id = vars["id"]
-		}
-		err := t.ExecuteTemplate(w, "view.html", ViewData{
-			Id: id,
-		})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Fatal(err)
-			return
+		id := vars["id"]
+		ext := util.GetFileExtFromDir(id, config.ImageDirectory)
+		if ext != "" {
+			err := t.ExecuteTemplate(w, "view.html", ViewData{
+				Id:       id,
+				ImageUrl: config.ImageUrl,
+				Ext:      ext,
+			})
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				log.Fatal(err)
+				return
+			}
+		} else {
+			w.Header().Add("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(http.StatusNotFound)
+			http.ServeFile(w, r, config.TemplateDirectory+"404.html")
 		}
 	}
 }
@@ -143,7 +153,7 @@ func ViewHandler(t *template.Template) http.HandlerFunc {
 // image to the ImageDirectory defined
 // in the config.json
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(config.MaxFileSize)
+	r.ParseMultipartForm(30000000)
 	file, handler, err := r.FormFile("file")
 	if err != nil {
 		log.Fatal(err)
@@ -156,16 +166,30 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	name := GenerateName(5)
+	name := GenerateName(config.ImageNameLength)
 	f, err := os.OpenFile(config.ImageDirectory+name+util.GetFileExt(handler.Header["Content-Disposition"][0]), os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	defer f.Close()
 
 	io.Copy(f, file)
-	http.Redirect(w, r, "/"+name+"/", http.StatusSeeOther)
+	fStat, err := f.Stat()
+	if err != nil {
+		log.Fatal(err)
+	}
+	size := fStat.Size()
+	if size > config.MaxFileSize {
+		f.Close()
+		err = os.RemoveAll(config.ImageDirectory + name + util.GetFileExt(handler.Header["Content-Disposition"][0]))
+		if err != nil {
+			log.Fatal(err)
+		}
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	} else {
+		http.Redirect(w, r, "/"+name+"/", http.StatusSeeOther)
+		f.Close()
+	}
 }
 
 // CheckFileType checks if the uploaded
@@ -190,7 +214,7 @@ func CheckFileType(f textproto.MIMEHeader) bool {
 func GenerateName(n int) string {
 	name := util.GenerateName(n)
 
-	for util.CheckExists(name, "images/") {
+	for util.CheckExists(name, config.ImageDirectory) {
 		name = util.GenerateName(n)
 	}
 

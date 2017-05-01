@@ -6,9 +6,8 @@ os:
   - os_x
 
 go:
-  - 1.8
-  - 1.7
-  - 1.6
+  - 1.8.1
+  - 1.7.3 
 
 install:
   - go get github.com/gorilla/mux
