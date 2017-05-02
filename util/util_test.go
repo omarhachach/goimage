@@ -2,12 +2,12 @@ package util
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
 	"os"
 	"testing"
 	"unicode/utf8"
 )
+
+var dir string = "testing/"
 
 func TestContains(t *testing.T) {
 	tests := []struct {
@@ -47,23 +47,14 @@ func TestContains(t *testing.T) {
 }
 
 func TestCheckExists(t *testing.T) {
-	content := []byte("temporary file's content")
-	dir, err := ioutil.TempDir("", "testing")
+	err := os.Mkdir(dir, 0777)
 	if err != nil {
-		t.Fatalf("Error creating tempdir: \n%d", err)
+		t.Fatal(err)
 	}
-
-	tmpfile, err := ioutil.TempFile(dir, "test")
+	f, err := os.OpenFile(dir+"test.txt", os.O_RDWR|os.O_CREATE, 0777)
+	f.Close()
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer os.Remove(tmpfile.Name())
-	if _, err := tmpfile.Write(content); err != nil {
-		log.Fatal(err)
-	}
-	if err = tmpfile.Close(); err != nil {
-		log.Fatal(err)
+		t.Fatal(err)
 	}
 
 	tests := []struct {
@@ -86,6 +77,10 @@ func TestCheckExists(t *testing.T) {
 		if actual != test.expected {
 			t.Errorf(errorPrefix+"Expected %d, got %d", test.expected, actual)
 		}
+	}
+	err = os.RemoveAll(dir)
+	if err != nil {
+		t.Error(err)
 	}
 }
 
@@ -114,54 +109,50 @@ func TestGenerateName(t *testing.T) {
 }
 
 func TestGetFileExtFromDir(t *testing.T) {
-	err := os.Mkdir("testing", 0777)
+	err := os.Mkdir(dir, 0777)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = os.OpenFile("testing/png.png", os.O_RDWR|os.O_CREATE, 0777)
+	f, err := os.OpenFile(dir+"png.png", os.O_RDONLY|os.O_CREATE, 0777)
+	f.Close()
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = os.OpenFile("testing/jpeg.jpeg", os.O_RDWR|os.O_CREATE, 0777)
+	f, err = os.OpenFile(dir+"jpeg.jpeg", os.O_RDONLY|os.O_CREATE, 0777)
+	f.Close()
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	tests := []struct {
 		name     string
-		dir      string
 		expected string
 	}{
 		{
 			"png",
-			"testing/",
 			".png",
 		},
 		{
 			"jpeg",
-			"testing/",
 			".jpeg",
 		},
 		{
 			"gif",
-			"testing/",
 			"",
 		},
 	}
 
 	for i, test := range tests {
 		errorPrefix := fmt.Sprintf("Test [%d]: ", i)
-		actual := GetFileExtFromDir(test.name, test.dir)
+		actual := GetFileExtFromDir(test.name, dir)
 		if actual != test.expected {
 			t.Errorf(errorPrefix+"Expected %d, got %d", test.expected, actual)
 		}
 	}
 
-	os.RemoveAll("testing/png.png")
-	os.RemoveAll("testing/jpeg.jpeg")
-	err = os.RemoveAll("testing")
+	err = os.RemoveAll(dir)
 	if err != nil {
-		t.Fatal(err)
+		t.Error(err)
 	}
 }
 
