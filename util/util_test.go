@@ -47,11 +47,11 @@ func TestContains(t *testing.T) {
 }
 
 func TestCheckExists(t *testing.T) {
-	err := os.Mkdir(dir, 0666)
+	err := os.Mkdir(dir, 0777)
 	if err != nil {
 		t.Fatal(err)
 	}
-	f, err := os.OpenFile(dir+"test.txt", os.O_RDONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(dir+"test.txt", os.O_RDWR|os.O_CREATE, 0777)
 	f.Close()
 	if err != nil {
 		t.Fatal(err)
@@ -109,16 +109,16 @@ func TestGenerateName(t *testing.T) {
 }
 
 func TestGetFileExtFromDir(t *testing.T) {
-	err := os.Mkdir(dir, 0666)
+	err := os.Mkdir(dir, 0777)
 	if err != nil {
 		t.Fatal(err)
 	}
-	f, err := os.OpenFile(dir+"png.png", os.O_RDONLY|os.O_CREATE, 0666)
+	f, err := os.OpenFile(dir+"png.png", os.O_RDONLY|os.O_CREATE, 0777)
 	f.Close()
 	if err != nil {
 		t.Fatal(err)
 	}
-	f, err = os.OpenFile(dir+"jpeg.jpeg", os.O_RDONLY|os.O_CREATE, 0666)
+	f, err = os.OpenFile(dir+"jpeg.jpeg", os.O_RDONLY|os.O_CREATE, 0777)
 	f.Close()
 	if err != nil {
 		t.Fatal(err)
