@@ -16,15 +16,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// Data parsed to the ViewHandler's template
-type ViewData struct {
+// viewData is the data parsed to the
+// ViewHandler's template
+type viewData struct {
 	Id       string
 	ImageUrl string
 	Ext      string
 }
 
-// Parsed JSON config
-type Config struct {
+// config is the parsed JSON config
+type config struct {
 	Port              int      `json:"port"`
 	Secure            bool     `json:"secure"`
 	AuthKey           string   `json:"32-byte-auth-key"`
@@ -39,7 +40,7 @@ type Config struct {
 	CSRF              bool     `json:"csrf"`
 }
 
-var config Config
+var parsedConfig config
 
 func main() {
 	jsonFiles, err := ioutil.ReadFile("./config.json")
@@ -47,50 +48,50 @@ func main() {
 		log.Fatal(err)
 		return
 	}
-	json.Unmarshal(jsonFiles, &config)
+	json.Unmarshal(jsonFiles, &parsedConfig)
 
 	CSRF := csrf.Protect(
-		[]byte(config.AuthKey),
+		[]byte(parsedConfig.AuthKey),
 		csrf.RequestHeader("X-CSRF-Token"),
 		csrf.FieldName("_csrf"),
-		csrf.Secure(config.Secure),
+		csrf.Secure(parsedConfig.Secure),
 	)
 	r := mux.NewRouter()
-	err = os.MkdirAll(config.TemplateDirectory, 644)
+	err = os.MkdirAll(parsedConfig.TemplateDirectory, 644)
 	if err != nil {
 		log.Fatal("Unable to create Template Directory")
 	}
-	err = os.MkdirAll(config.PublicDirectory, 644)
+	err = os.MkdirAll(parsedConfig.PublicDirectory, 644)
 	if err != nil {
 		log.Fatal("Unable to create Public Directory")
 	}
-	err = os.MkdirAll(config.ImageDirectory, 644)
+	err = os.MkdirAll(parsedConfig.ImageDirectory, 644)
 	if err != nil {
 		log.Fatal("Unable to create Image Directory")
 	}
 
-	templates := template.Must(template.ParseGlob(config.TemplateDirectory + "*.html"))
+	templates := template.Must(template.ParseGlob(parsedConfig.TemplateDirectory + "*.html"))
 
-	r.HandleFunc("/{id}/", ViewHandler(templates)).Methods("GET")
-	r.HandleFunc("/upload/", UploadHandler).Methods("POST")
-	r.PathPrefix("/").HandlerFunc(RootHandler(templates)).Methods("GET")
+	r.HandleFunc("/{id}/", viewHandler(templates)).Methods("GET")
+	r.HandleFunc("/upload/", uploadHandler).Methods("POST")
+	r.PathPrefix("/").HandlerFunc(rootHandler(templates)).Methods("GET")
 
-	log.Print("Listening on port " + strconv.Itoa(config.Port))
-	if config.CSRF {
-		log.Fatal(http.ListenAndServe(":"+strconv.Itoa(config.Port), CSRF(r)))
+	log.Print("Listening on port " + strconv.Itoa(parsedConfig.Port))
+	if parsedConfig.CSRF {
+		log.Fatal(http.ListenAndServe(":"+strconv.Itoa(parsedConfig.Port), CSRF(r)))
 	} else {
-		log.Fatal(http.ListenAndServe(":"+strconv.Itoa(config.Port), r))
+		log.Fatal(http.ListenAndServe(":"+strconv.Itoa(parsedConfig.Port), r))
 	}
 }
 
-// RootHandler handles the root route.
+// rootHandler handles the root route.
 // This includes the homepage and the
 // file system.
-func RootHandler(t *template.Template) http.HandlerFunc {
+func rootHandler(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch url := r.URL.Path; url {
 		case "/":
-			if config.CSRF {
+			if parsedConfig.CSRF {
 				w.Header().Set("X-CSRF-Token", csrf.Token(r))
 				err := t.ExecuteTemplate(w, "index.html", map[string]interface{}{
 					csrf.TemplateTag: csrf.TemplateField(r),
@@ -107,34 +108,34 @@ func RootHandler(t *template.Template) http.HandlerFunc {
 				}
 			}
 		default:
-			if _, err := os.Stat(config.PublicDirectory + url); err != nil {
+			if _, err := os.Stat(parsedConfig.PublicDirectory + url); err != nil {
 				w.Header().Add("Content-Type", "text/html; charset=utf-8")
 				w.WriteHeader(http.StatusNotFound)
-				http.ServeFile(w, r, config.TemplateDirectory+"404.html")
+				http.ServeFile(w, r, parsedConfig.TemplateDirectory+"404.html")
 			} else {
-				http.ServeFile(w, r, config.PublicDirectory+url)
+				http.ServeFile(w, r, parsedConfig.PublicDirectory+url)
 			}
 		}
 
 	}
 }
 
-// Handles the ability to view your image.
+// viewHandler handles the ability to view your image.
 // It checks if the file exists, and returns
 // an appropriate response.
 //
 // If the image exists, it serves a template
 // which is defined in
 // TemplateDirectory/view.html.
-func ViewHandler(t *template.Template) http.HandlerFunc {
+func viewHandler(t *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		id := vars["id"]
-		ext := util.GetFileExtFromDir(id, config.ImageDirectory)
+		ext := util.GetFileExtFromDir(id, parsedConfig.ImageDirectory)
 		if ext != "" {
-			err := t.ExecuteTemplate(w, "view.html", ViewData{
+			err := t.ExecuteTemplate(w, "view.html", viewData{
 				Id:       id,
-				ImageUrl: config.ImageUrl,
+				ImageUrl: parsedConfig.ImageUrl,
 				Ext:      ext,
 			})
 			if err != nil {
@@ -145,16 +146,16 @@ func ViewHandler(t *template.Template) http.HandlerFunc {
 		} else {
 			w.Header().Add("Content-Type", "text/html; charset=utf-8")
 			w.WriteHeader(http.StatusNotFound)
-			http.ServeFile(w, r, config.TemplateDirectory+"404.html")
+			http.ServeFile(w, r, parsedConfig.TemplateDirectory+"404.html")
 		}
 	}
 }
 
-// Handles the upload route.
+// uploadHandler handles the upload route.
 // It checks the file, and uploads the
 // image to the ImageDirectory defined
 // in the config.json
-func UploadHandler(w http.ResponseWriter, r *http.Request) {
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(30000000)
 	file, handler, err := r.FormFile("file")
 	if err != nil {
@@ -163,13 +164,13 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer file.Close()
 
-	if CheckFileType(handler.Header) == false {
+	if checkFileType(handler.Header) == false {
 		http.Redirect(w, r, "/", http.StatusSeeOther)
 		return
 	}
 
-	name := GenerateName(config.ImageNameLength)
-	f, err := os.OpenFile(config.ImageDirectory+name+util.GetFileExt(handler.Header["Content-Disposition"][0]), os.O_WRONLY|os.O_CREATE, 0644)
+	name := generateName(parsedConfig.ImageNameLength)
+	f, err := os.OpenFile(parsedConfig.ImageDirectory+name+util.GetFileExt(handler.Header["Content-Disposition"][0]), os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		log.Fatal(err)
 		return
@@ -181,9 +182,9 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 	size := fStat.Size()
-	if size > config.MaxFileSize {
+	if size > parsedConfig.MaxFileSize {
 		f.Close()
-		err = os.RemoveAll(config.ImageDirectory + name + util.GetFileExt(handler.Header["Content-Disposition"][0]))
+		err = os.RemoveAll(parsedConfig.ImageDirectory + name + util.GetFileExt(handler.Header["Content-Disposition"][0]))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -194,29 +195,29 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// CheckFileType checks if the uploaded
+// checkFileType checks if the uploaded
 // file's extension is allowed.
 // It accepts a textproto.MIMEHeader
-// which is recieved from the http.Request
+// which is received from the http.Request
 // FormFile function, as the handler.Header
-func CheckFileType(f textproto.MIMEHeader) bool {
+func checkFileType(f textproto.MIMEHeader) bool {
 	ext := util.GetFileExt(f["Content-Disposition"][0])
 
-	if !util.Contains(config.AllowedMimeTypes, f["Content-Type"][0]) || !util.Contains(config.AllowedExtensions, ext) {
+	if !util.Contains(parsedConfig.AllowedMimeTypes, f["Content-Type"][0]) || !util.Contains(parsedConfig.AllowedExtensions, ext) {
 		return false
 	}
 
 	return true
 }
 
-// GenerateName generates a name with
+// generateName generates a name with
 // a specified length, and checks if
 // the name already exists, using the
 // util functions for this.
-func GenerateName(n int) string {
+func generateName(n int) string {
 	name := util.GenerateName(n)
 
-	for util.CheckExists(name, config.ImageDirectory) {
+	for util.CheckExists(name, parsedConfig.ImageDirectory) {
 		name = util.GenerateName(n)
 	}
 
