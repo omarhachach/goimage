@@ -17,7 +17,7 @@ const (
 	letterIdxMax  = 63 / letterIdxBits
 )
 
-// Checks if a string slice contains a string
+// Contains checks if a string slice contains a string
 func Contains(s []string, e string) bool {
 	for _, a := range s {
 		if a == e {
@@ -27,7 +27,7 @@ func Contains(s []string, e string) bool {
 	return false
 }
 
-// Checks if the filename already exists in
+// CheckExists checks if the filename already exists in
 // a directory.
 //
 // NOTE: THIS IS GLOB-LIKE AND WILL CHECK IF
@@ -48,7 +48,7 @@ func CheckExists(name string, dir string) bool {
 	return false
 }
 
-// Generates a name of a specified length
+// GenerateName generates a name of a specified length
 func GenerateName(n int) string {
 	var src = rand.NewSource(time.Now().UnixNano())
 
@@ -68,14 +68,14 @@ func GenerateName(n int) string {
 	return string(b)
 }
 
-// This function reads a directory, and gets
+// GetFileExtFromDir reads a directory, and gets
 // the extension from the file which matches
 // the name string (Glob code: *name*).
 // Returns empty string on no results.
 func GetFileExtFromDir(name string, dir string) string {
 	files, err := ioutil.ReadDir(dir)
 	if err != nil {
-		log.Fatalf("Error reading from directory (%d)", dir)
+		log.Fatal("Error reading from directory (" + dir + ")")
 	}
 	for _, f := range files {
 		if strings.Contains(f.Name(), name) {
@@ -85,7 +85,7 @@ func GetFileExtFromDir(name string, dir string) string {
 	return ""
 }
 
-// Gets the file extension from the specified string
+// GetFileExt gets the file extension from the specified string
 //
 // NOTE: CHECKS A VERY SPECIFIC STRING (http.Request
 // FileForm handler.Header["Content-Disposition"][0])
