@@ -1,6 +1,6 @@
 ## goimage - A simple image uploader/server
 
-[![Build Status](https://travis-ci.org/omar-hgoimage.svg?branch=master)](https://travis-ci.org/omar-h/goimage)
+[![Build Status](https://travis-ci.org/omar-h/goimage.svg?branch=master)](https://travis-ci.org/omar-h/goimage)
 
 Goimage is a simple, fully functional, go server for handling image uploads. It is fully standalone, but can be put behind a reverse-proxy.
 
