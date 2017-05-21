@@ -12,11 +12,11 @@ install:
   - go get github.com/gorilla/csrf
 
 before_script:
-  - go fmt github.com/Omar-H/goimage
-  - go fmt github.com/Omar-H/goimage/util
+  - go fmt github.com/omar-h/goimage
+  - go fmt github.com/omar-h/goimage/util
 
 script:
-  - go test github.com/Omar-H/goimage
-  - go test github.com/Omar-H/goimage/util
-  - go build github.com/Omar-H/goimage
-  - go build github.com/Omar-H/goimage/util
+  - go test github.com/omar-h/goimage
+  - go test github.com/omar-h/goimage/util
+  - go build github.com/omar-h/goimage
+  - go build github.com/omar-h/goimage/util
