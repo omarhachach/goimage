@@ -1,10 +1,10 @@
 ## goimage - A simple image uploader/server
 
-[![Build Status](https://travis-ci.org/Omar-H/goimage.svg?branch=master)](https://travis-ci.org/Omar-H/goimage)
+[![Build Status](https://travis-ci.org/omar-hgoimage.svg?branch=master)](https://travis-ci.org/omar-h/goimage)
 
 Goimage is a simple, fully functional, go server for handling image uploads. It is fully standalone, but can be put behind a reverse-proxy.
 
-[Releases](https://github.com/Omar-H/goimage/releases) | [Docs](https://github.com/Omar-H/goimage/wiki)
+[Releases](https://github.com/omar-h/goimage/releases) | [Docs](https://github.com/omar-h/goimage/wiki)
 
 ## Menu
 * [Features](#features)
@@ -20,7 +20,7 @@ Goimage is a simple, fully functional, go server for handling image uploads. It 
 * More coming soon..
 
 ## Getting Started
-Download the latest [release](https://github.com/Omar-H/goimage/releases) for your platform, and extract the files.
+Download the latest [release](https://github.com/omar-h/goimage/releases) for your platform, and extract the files.
 
 Create a config.json file in the root directory:
 ```JSON
@@ -97,7 +97,7 @@ go run main.go
 ```
 
 ## Contributing
-Please check out our [wiki](https://github.com/Omar-H/goimage/wiki) for more information about contributing.
+Please check out our [wiki](https://github.com/omar-h/goimage/wiki) for more information about contributing.
 
 You can contact the author on Discord: Omar H.#6299 or via email: [contact@omarh.net](mailto:contact@omarh.net).
 
