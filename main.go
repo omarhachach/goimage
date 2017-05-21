@@ -11,7 +11,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Omar-H/goimage/util"
+	"github.com/omar-h/goimage/util"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 )
