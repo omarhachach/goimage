@@ -11,9 +11,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/omar-h/goimage/util"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
+	"github.com/omar-h/goimage/util"
 )
 
 // viewData is the data parsed to the
