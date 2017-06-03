@@ -1,6 +1,6 @@
 ## goimage - A simple image uploader/server
 [![Travis branch](https://img.shields.io/travis/omar-h/goimage/master.svg?style=flat-square)](https://travis-ci.org/omar-h/goimage)
-![GitHub tag](https://img.shields.io/github/release/omar-h/goimage.svg?style=flat-square)
+[![GitHub tag](https://img.shields.io/github/release/omar-h/goimage.svg?style=flat-square)](https://github.com/omar-h/goimage/releases)
 [![Report Card](https://img.shields.io/badge/report%20card-a%2B-c0392b.svg?style=flat-square)](https://goreportcard.com/report/github.com/omar-h/goimage)
 ![Powered By](https://img.shields.io/badge/powered%20by-go-blue.svg?style=flat-square)
 [![License](https://img.shields.io/badge/license-MIT%20License-1abc9c.svg?style=flat-square)](https://github.com/omar-h/goimage/blob/master/LICENSE.txt)
