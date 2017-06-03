@@ -1,6 +1,9 @@
 ## goimage - A simple image uploader/server
-
-[![Build Status](https://travis-ci.org/omar-h/goimage.svg?branch=master)](https://travis-ci.org/omar-h/goimage)
+[![Travis branch](https://img.shields.io/travis/omar-h/goimage/master.svg?style=flat-square)](https://travis-ci.org/omar-h/goimage)
+![GitHub tag](https://img.shields.io/github/release/omar-h/goimage.svg?style=flat-square)
+[![Report Card](https://img.shields.io/badge/report%20card-a%2B-c0392b.svg?style=flat-square)](https://goreportcard.com/report/github.com/omar-h/goimage)
+![Powered By](https://img.shields.io/badge/powered%20by-go-blue.svg?style=flat-square)
+[![License](https://img.shields.io/badge/license-MIT%20License-1abc9c.svg?style=flat-square)](https://github.com/omar-h/goimage/blob/master/LICENSE.txt)
 
 Goimage is a simple, fully functional, go server for handling image uploads. It is fully standalone, but can be put behind a reverse-proxy.
 
