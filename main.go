@@ -19,8 +19,8 @@ import (
 // viewData is the data parsed to the
 // ViewHandler's template
 type viewData struct {
-	Id       string
-	ImageUrl string
+	ID       string
+	ImageURL string
 	Ext      string
 }
 
@@ -36,7 +36,7 @@ type config struct {
 	ImageDirectory    string   `json:"image-directory"`
 	TemplateDirectory string   `json:"template-directory"`
 	PublicDirectory   string   `json:"public-directory"`
-	ImageUrl          string   `json:"image-url"`
+	ImageURL          string   `json:"image-url"`
 	CSRF              bool     `json:"csrf"`
 }
 
@@ -134,8 +134,8 @@ func viewHandler(t *template.Template) http.HandlerFunc {
 		ext := util.GetFileExtFromDir(id, parsedConfig.ImageDirectory)
 		if ext != "" {
 			err := t.ExecuteTemplate(w, "view.html", viewData{
-				Id:       id,
-				ImageUrl: parsedConfig.ImageUrl,
+				ID:       id,
+				ImageURL: parsedConfig.ImageURL,
 				Ext:      ext,
 			})
 			if err != nil {

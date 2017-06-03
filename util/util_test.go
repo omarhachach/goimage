@@ -7,7 +7,7 @@ import (
 	"unicode/utf8"
 )
 
-var dir string = "testing/"
+var dir = "testing/"
 
 func TestContains(t *testing.T) {
 	tests := []struct {
