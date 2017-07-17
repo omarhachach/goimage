@@ -38,10 +38,10 @@ func TestContains(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		errorPrefix := fmt.Sprintf("Test [%d]: ", i)
+		errorPrefix := fmt.Sprintf("Test [%v]: ", i)
 		actual := Contains(test.slice, test.string)
 		if actual != test.expected {
-			t.Errorf(errorPrefix+"Expected %d, got %d", test.expected, actual)
+			t.Errorf(errorPrefix+"Expected %v, got %v", test.expected, actual)
 		}
 	}
 }
@@ -72,10 +72,10 @@ func TestCheckExists(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		errorPrefix := fmt.Sprintf("Test [%d]: ", i)
+		errorPrefix := fmt.Sprintf("Test [%v]: ", i)
 		actual := CheckExists(test.filename, dir)
 		if actual != test.expected {
-			t.Errorf(errorPrefix+"Expected %d, got %d", test.expected, actual)
+			t.Errorf(errorPrefix+"Expected %v, got %v", test.expected, actual)
 		}
 	}
 	err = os.RemoveAll(dir)
@@ -100,10 +100,10 @@ func TestGenerateName(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		errorPrefix := fmt.Sprintf("Test [%d]: ", i)
+		errorPrefix := fmt.Sprintf("Test [%v]: ", i)
 		actual := GenerateName(test.length)
 		if utf8.RuneCountInString(actual) != test.length {
-			t.Errorf(errorPrefix+"Expected length of %d, got %d (%d)", test.length, utf8.RuneCountInString(actual), actual)
+			t.Errorf(errorPrefix+"Expected length of %v, got %v (%v)", test.length, utf8.RuneCountInString(actual), actual)
 		}
 	}
 }
@@ -143,10 +143,10 @@ func TestGetFileExtFromDir(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		errorPrefix := fmt.Sprintf("Test [%d]: ", i)
+		errorPrefix := fmt.Sprintf("Test [%v]: ", i)
 		actual := GetFileExtFromDir(test.name, dir)
 		if actual != test.expected {
-			t.Errorf(errorPrefix+"Expected %d, got %d", test.expected, actual)
+			t.Errorf(errorPrefix+"Expected %v, got %v", test.expected, actual)
 		}
 	}
 
@@ -172,10 +172,10 @@ func TestGetFileExt(t *testing.T) {
 	}
 
 	for i, test := range tests {
-		errorPrefix := fmt.Sprintf("Test [%d]: ", i)
+		errorPrefix := fmt.Sprintf("Test [%v]: ", i)
 		actual := GetFileExt(test.string)
 		if actual != test.expected {
-			t.Errorf(errorPrefix+"Expected %d, got %d", test.expected, actual)
+			t.Errorf(errorPrefix+"Expected %v, got %v", test.expected, actual)
 		}
 	}
 }

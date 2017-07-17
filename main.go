@@ -43,12 +43,17 @@ type config struct {
 var parsedConfig config
 
 func main() {
+	// Open JSON config
 	jsonFiles, err := ioutil.ReadFile("./config.json")
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	json.Unmarshal(jsonFiles, &parsedConfig)
+	// Parse JSON config
+	err = json.Unmarshal(jsonFiles, &parsedConfig)
+	if err != nil {
+		log.Fatalf("Failed to parse JSON config:\n%v", err)
+	}
 
 	CSRF := csrf.Protect(
 		[]byte(parsedConfig.AuthKey),
@@ -56,27 +61,34 @@ func main() {
 		csrf.FieldName("_csrf"),
 		csrf.Secure(parsedConfig.Secure),
 	)
+
 	r := mux.NewRouter()
+
+	// Create required directories
 	err = os.MkdirAll(parsedConfig.TemplateDirectory, 644)
 	if err != nil {
-		log.Fatal("Unable to create Template Directory")
+		log.Fatalf("Failed to create Template Directory:\n%v", err)
 	}
 	err = os.MkdirAll(parsedConfig.PublicDirectory, 644)
 	if err != nil {
-		log.Fatal("Unable to create Public Directory")
+		log.Fatalf("Failed to create Public Directory:\n%v", err)
 	}
 	err = os.MkdirAll(parsedConfig.ImageDirectory, 644)
 	if err != nil {
-		log.Fatal("Unable to create Image Directory")
+		log.Fatalf("Failed to create Image Directory:\n%v", err)
 	}
 
-	templates := template.Must(template.ParseGlob(parsedConfig.TemplateDirectory + "*.html"))
+	// Parse templates
+	templates, err := template.ParseGlob(parsedConfig.TemplateDirectory + "*.html")
+	if err != nil {
+		log.Fatalf("Failed to parse templates:\n%v", err)
+	}
 
 	r.HandleFunc("/{id}/", viewHandler(templates)).Methods("GET")
 	r.HandleFunc("/upload/", uploadHandler).Methods("POST")
 	r.PathPrefix("/").HandlerFunc(rootHandler(templates)).Methods("GET")
 
-	log.Print("Listening on port " + strconv.Itoa(parsedConfig.Port))
+	log.Printf("Listening on port: %v", parsedConfig.Port)
 	if parsedConfig.CSRF {
 		log.Fatal(http.ListenAndServe(":"+strconv.Itoa(parsedConfig.Port), CSRF(r)))
 	} else {
