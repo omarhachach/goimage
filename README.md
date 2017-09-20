@@ -69,7 +69,7 @@ $ ./goimage
 ```
 On a Windows machine, you would open a command prompt window, and run:
 ```BASH
-C:\goimage-folder> goimage.exe
+> goimage.exe
 ```
 
 ## Benchmarks
@@ -86,7 +86,7 @@ Note: Requires Go installed on the system.
 
 ```BASH
 git clone https://github.com/Omar-H/goimage.git
-cd goimage/
+cd goimage/goimage/
 go run main.go
 ```
 
@@ -95,7 +95,7 @@ go run main.go
 Note: You need to have GOPATH set.
 ```BASH
 go get github.com/Omar-H/goimage
-cd $GOPATH/src/github.com/Omar-H/goimage
+cd $GOPATH/src/github.com/Omar-H/goimage/goimage
 go run main.go
 ```
 
