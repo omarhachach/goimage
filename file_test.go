@@ -108,8 +108,9 @@ func TestMoveFile(t *testing.T) {
 		return
 	}
 
+	defer file.Close()
+
 	MoveFile(file, tempDir+"/newTest.txt")
-	file.Close()
 	newFile, err := os.Open(tempDir + "/newTest.txt")
 	if err != nil {
 		t.Error("Error on opening moved file: " + err.Error())
