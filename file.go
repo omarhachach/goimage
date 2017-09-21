@@ -22,7 +22,7 @@ type FileInfo struct {
 func GetFileBasename(filename string) (basename string) {
 	index := strings.LastIndex(filename, ".")
 	if index == -1 {
-		return ""
+		return filename
 	}
 
 	return filename[:index]
@@ -38,6 +38,7 @@ func GetFileInfo(dirname, filename string) (exists bool, fileInfo FileInfo, err 
 	for _, existingFile := range existingFiles {
 		name := existingFile.Name()
 		basename := GetFileBasename(name)
+
 		if basename == GetFileBasename(filename) {
 			return true, FileInfo{
 				Basename:  basename,

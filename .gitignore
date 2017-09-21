@@ -1,2 +1,4 @@
 .idea/
-public/i/*
+templates/
+public/
+goimage.exe
