@@ -1,4 +1,4 @@
-package util
+package utils
 
 import (
 	"math/rand"
@@ -7,7 +7,7 @@ import (
 
 // Variables used for the GenerateName function
 const (
-	letterBytes   = "abcdefghijklmnopqrstuvwxyz1234567890"
+	letterBytes   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ1234567890"
 	letterIdxBits = 6
 	letterIdxMask = 1<<letterIdxBits - 1
 	letterIdxMax  = 63 / letterIdxBits

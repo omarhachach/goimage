@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/omar-h/goimage"
-	"github.com/omar-h/goimage/util"
+	"github.com/omar-h/goimage/utils"
 	"github.com/sirupsen/logrus"
 )
 
@@ -84,14 +84,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ext := goimage.GetFileExtension(handler)
-	if !util.ContainsString(ext, config.AllowedExtensions) {
+	if !utils.ContainsString(ext, config.AllowedExtensions) {
 		w.WriteHeader(http.StatusBadRequest)
 		logrus.Debug("The extension isn't allowed.")
 		return
 	}
 
 	header := handler.Header
-	if !util.ContainsString(goimage.GetFileMIMEType(header), config.AllowedMIMETypes) {
+	if !utils.ContainsString(goimage.GetFileMIMEType(header), config.AllowedMIMETypes) {
 		w.WriteHeader(http.StatusBadRequest)
 		logrus.Debug("The mime type isn't allowed.")
 		return
@@ -99,7 +99,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	var id string
 	for id == "" {
-		id = util.GenerateName(config.ImageNameLength)
+		id = utils.GenerateName(config.ImageNameLength)
 
 		fileInfo, err := goimage.GetFileInfo(config.ImageDirectory, id)
 		if err != nil {
