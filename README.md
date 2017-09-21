@@ -7,7 +7,7 @@
 
 Goimage is a simple, fully functional, go server for handling image uploads. It is fully standalone, but can be put behind a reverse-proxy.
 
-[Releases](https://github.com/omar-h/goimage/releases) | [Docs](https://github.com/omar-h/goimage/wiki)
+[Releases](https://github.com/omar-h/goimage/releases) | [Docs](https://godoc.org/github.com/omar-h/goimage)
 
 ## Menu
 * [Features](#features)
@@ -42,22 +42,21 @@ Create a config.json file in the root directory:
         "image/gif"
     ],
     "allowed-extensions": [
-        ".png",
-        ".jpeg",
-        ".jpg",
-        ".jiff",
-        ".png",
-        ".ico",
-        ".gif",
-        ".tif",
-        ".webp"
+        "png",
+        "jpeg",
+        "jpg",
+        "jiff",
+        "png",
+        "ico",
+        "gif",
+        "tif",
+        "webp"
     ],
     "image-name-length": 4,
     "max-file-size": 30000000,
     "image-directory": "public/i/",
     "template-directory": "templates/",
     "public-directory": "public/",
-    "image-url": "/i/",
     "csrf": false
 }
 ```
@@ -86,8 +85,9 @@ Note: Requires Go installed on the system.
 
 ```BASH
 git clone https://github.com/Omar-H/goimage.git
-cd goimage/goimage/
-go run main.go
+cd goimage/cmd/goimage
+go build .
+./goimage
 ```
 
 **Go Get**
@@ -95,8 +95,9 @@ go run main.go
 Note: You need to have GOPATH set.
 ```BASH
 go get github.com/Omar-H/goimage
-cd $GOPATH/src/github.com/Omar-H/goimage/goimage
-go run main.go
+cd $GOPATH/src/github.com/Omar-H/goimage/cmd/goimage
+go build .
+./goimage
 ```
 
 ## Contributing
