@@ -1,7 +1,9 @@
 package main
 
-import "io/ioutil"
-import "encoding/json"
+import (
+	"encoding/json"
+	"io/ioutil"
+)
 
 // Config holds the configuration options for the image server.
 type Config struct {
@@ -15,7 +17,6 @@ type Config struct {
 	ImageDirectory    string   `json:"image-directory"`
 	TemplateDirectory string   `json:"template-directory"`
 	PublicDirectory   string   `json:"public-directory"`
-	ImageURL          string   `json:"image-url"`
 	CSRF              bool     `json:"csrf"`
 }
 
