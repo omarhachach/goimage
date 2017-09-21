@@ -68,6 +68,8 @@ func MoveFile(file multipart.File, filepath string) (err error) {
 		return err
 	}
 
+	defer f.Close()
+
 	_, err = io.Copy(f, file)
 	if err != nil {
 		newErr := os.Remove(filepath)

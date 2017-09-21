@@ -89,32 +89,35 @@ func TestGetFileMIMEType(t *testing.T) {
 }
 
 func TestMoveFile(t *testing.T) {
-	tempDir := os.TempDir() + "/goimagetest"
-	err := os.RemoveAll(tempDir)
-	if err != nil {
-		t.Error("Error deleting temp directory: " + err.Error())
-		return
-	}
+	tempDir := "goimagetest/"
 
-	err = os.Mkdir(tempDir, 0644)
+	err := os.Mkdir(tempDir, 0644)
 	if err != nil {
 		t.Error("Error creating temp directory: " + err.Error())
 		return
 	}
 
-	file, err := os.OpenFile(tempDir+"/test.txt", os.O_RDWR|os.O_CREATE, 0644)
+	file, err := os.OpenFile(tempDir+"test.txt", os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		t.Error("Error creating test file: " + err.Error())
 		return
 	}
 
-	defer file.Close()
+	MoveFile(file, tempDir+"newTest.txt")
 
-	MoveFile(file, tempDir+"/newTest.txt")
-	newFile, err := os.Open(tempDir + "/newTest.txt")
+	file.Close()
+
+	newFile, err := os.Open(tempDir + "newTest.txt")
 	if err != nil {
 		t.Error("Error on opening moved file: " + err.Error())
 		return
 	}
+
 	newFile.Close()
+
+	err = os.RemoveAll(tempDir)
+	if err != nil {
+		t.Error("Error deleting temp directory: " + err.Error())
+		return
+	}
 }
