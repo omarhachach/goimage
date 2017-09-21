@@ -91,13 +91,13 @@ func TestGetFileMIMEType(t *testing.T) {
 func TestMoveFile(t *testing.T) {
 	tempDir := "goimagetest/"
 
-	err := os.Mkdir(tempDir, 0644)
+	err := os.Mkdir(tempDir, 0777)
 	if err != nil {
 		t.Error("Error creating temp directory: " + err.Error())
 		return
 	}
 
-	file, err := os.OpenFile(tempDir+"test.txt", os.O_RDWR|os.O_CREATE, 0644)
+	file, err := os.OpenFile(tempDir+"test.txt", os.O_RDWR|os.O_CREATE, 0777)
 	if err != nil {
 		t.Error("Error creating test file: " + err.Error())
 		return
