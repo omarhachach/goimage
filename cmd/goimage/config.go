@@ -10,7 +10,7 @@ type Config struct {
 	Port              int      `json:"port"`
 	Secure            bool     `json:"secure"`
 	AuthKey           string   `json:"32-byte-auth-key"`
-	AllowedMimeTypes  []string `json:"allowed-mime-types"`
+	AllowedMIMETypes  []string `json:"allowed-mime-types"`
 	AllowedExtensions []string `json:"allowed-extensions"`
 	ImageNameLength   int      `json:"image-name-length"`
 	MaxFileSize       int64    `json:"max-file-size"`

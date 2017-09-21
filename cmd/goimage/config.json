@@ -13,15 +13,14 @@
       "image/gif"
     ],
     "allowed-extensions": [
-      ".png",
-      ".jpeg",
-      ".jpg",
-      ".jiff",
-      ".png",
-      ".ico",
-      ".gif",
-      ".tif",
-      ".webp"
+      "png",
+      "jpeg",
+      "jpg",
+      "jiff",
+      "ico",
+      "gif",
+      "tif",
+      "webp"
     ],
     "image-name-length": 4,
     "max-file-size": 30000000,

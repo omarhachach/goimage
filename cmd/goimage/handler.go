@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/omar-h/goimage"
+	"github.com/sirupsen/logrus"
 )
 
 // FileServer serves the fileserver for the static files and images.
@@ -36,13 +37,14 @@ func IndexHandler(indexTemplate *template.Template) http.HandlerFunc {
 func ViewHandler(viewTemplate, notFoundTemplate *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
-		exists, fileInfo, err := goimage.GetFileInfo(config.ImageDirectory, id)
+		fileInfo, err := goimage.GetFileInfo(config.ImageDirectory, id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
+			logrus.WithError(err).Error("Error getting file info.")
 			return
 		}
 
-		if !exists {
+		if fileInfo == nil {
 			w.WriteHeader(http.StatusBadRequest)
 			notFoundTemplate.Execute(w, nil)
 			return
@@ -63,5 +65,4 @@ func ViewHandler(viewTemplate, notFoundTemplate *template.Template) http.Handler
 // UploadHandler handles file uploads. It takes the POST request, performs
 // checks and stores the image.
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-
 }

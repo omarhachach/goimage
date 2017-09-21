@@ -29,10 +29,10 @@ func GetFileBasename(filename string) (basename string) {
 }
 
 // GetFileInfo returns the existing files info.
-func GetFileInfo(dirname, filename string) (exists bool, fileInfo FileInfo, err error) {
+func GetFileInfo(dirname, filename string) (fileInfo *FileInfo, err error) {
 	existingFiles, err := ioutil.ReadDir(dirname)
 	if err != nil {
-		return false, FileInfo{}, err
+		return nil, err
 	}
 
 	for _, existingFile := range existingFiles {
@@ -40,7 +40,7 @@ func GetFileInfo(dirname, filename string) (exists bool, fileInfo FileInfo, err 
 		basename := GetFileBasename(name)
 
 		if basename == GetFileBasename(filename) {
-			return true, FileInfo{
+			return &FileInfo{
 				Basename:  basename,
 				Extension: filepath.Ext(name),
 				Filename:  name,
@@ -48,11 +48,11 @@ func GetFileInfo(dirname, filename string) (exists bool, fileInfo FileInfo, err 
 		}
 	}
 
-	return false, FileInfo{}, nil
+	return nil, nil
 }
 
 // GetFileExtension returns the given files extension.
-func GetFileExtension(header multipart.FileHeader) (extension string) {
+func GetFileExtension(header *multipart.FileHeader) (extension string) {
 	return filepath.Ext(header.Filename)
 }
 
