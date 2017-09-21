@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/omar-h/goimage"
+	"github.com/omar-h/goimage/util"
 	"github.com/sirupsen/logrus"
 )
 
@@ -65,4 +66,58 @@ func ViewHandler(viewTemplate, notFoundTemplate *template.Template) http.Handler
 // UploadHandler handles file uploads. It takes the POST request, performs
 // checks and stores the image.
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(32 << 20)
+
+	file, handler, err := r.FormFile("file")
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		logrus.WithError(err).Error("Error handling image.")
+		return
+	}
+
+	defer file.Close()
+
+	if handler.Size > config.MaxFileSize {
+		w.WriteHeader(http.StatusBadRequest)
+		logrus.Debug("File is way too big.")
+		return
+	}
+
+	ext := goimage.GetFileExtension(handler)
+	if !util.ContainsString(ext, config.AllowedExtensions) {
+		w.WriteHeader(http.StatusBadRequest)
+		logrus.Debug("The extension isn't allowed.")
+		return
+	}
+
+	header := handler.Header
+	if !util.ContainsString(goimage.GetFileMIMEType(header), config.AllowedMIMETypes) {
+		w.WriteHeader(http.StatusBadRequest)
+		logrus.Debug("The mime type isn't allowed.")
+		return
+	}
+
+	var id string
+	for id == "" {
+		id = util.GenerateName(config.ImageNameLength)
+
+		fileInfo, err := goimage.GetFileInfo(config.ImageDirectory, id)
+		if err != nil {
+			logrus.WithError(err).Error("Error getting file info.")
+			return
+		}
+
+		if fileInfo != nil {
+			id = ""
+		}
+	}
+
+	goimage.MoveFile(file, config.ImageDirectory+id+"."+"png")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		logrus.WithError(err).Error("Error moving file.")
+		return
+	}
+
+	http.Redirect(w, r, "/"+id+"/", http.StatusSeeOther)
 }
