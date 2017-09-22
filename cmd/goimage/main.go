@@ -61,6 +61,10 @@ func main() {
 	router.Use(middleware.DefaultCompress)
 	router.Use(MaxBodySizeMiddleware)
 
+	if *debug {
+		router.Use(middleware.Logger)
+	}
+
 	templates, err := template.ParseGlob(config.TemplateDirectory + "*.html")
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to parse templates.")
