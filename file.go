@@ -42,7 +42,7 @@ func GetFileInfo(dirname, filename string) (fileInfo *FileInfo, err error) {
 		if basename == GetFileBasename(filename) {
 			return &FileInfo{
 				Basename:  basename,
-				Extension: filepath.Ext(name),
+				Extension: GetFileExtension(filename),
 				Filename:  name,
 			}, nil
 		}
@@ -52,8 +52,8 @@ func GetFileInfo(dirname, filename string) (fileInfo *FileInfo, err error) {
 }
 
 // GetFileExtension returns the given files extension.
-func GetFileExtension(header *multipart.FileHeader) (extension string) {
-	return filepath.Ext(header.Filename)[1:]
+func GetFileExtension(filename string) (extension string) {
+	return filepath.Ext(filename)[1:]
 }
 
 // GetFileMIMEType get an image mime type.

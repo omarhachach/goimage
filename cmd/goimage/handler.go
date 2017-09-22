@@ -83,15 +83,14 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ext := goimage.GetFileExtension(handler)
+	ext := goimage.GetFileExtension(handler.Filename)
 	if !utils.ContainsString(ext, config.AllowedExtensions) {
 		w.WriteHeader(http.StatusBadRequest)
 		logrus.Debug("The extension isn't allowed.")
 		return
 	}
 
-	header := handler.Header
-	if !utils.ContainsString(goimage.GetFileMIMEType(header), config.AllowedMIMETypes) {
+	if !utils.ContainsString(goimage.GetFileMIMEType(handler.Header), config.AllowedMIMETypes) {
 		w.WriteHeader(http.StatusBadRequest)
 		logrus.Debug("The mime type isn't allowed.")
 		return
@@ -112,7 +111,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	goimage.MoveFile(file, config.ImageDirectory+id+"."+"png")
+	goimage.MoveFile(file, config.ImageDirectory+id+"."+ext)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		logrus.WithError(err).Error("Error moving file.")
