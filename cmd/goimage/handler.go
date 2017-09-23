@@ -29,7 +29,12 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 // IndexHandler serves the index at the index route.
 func IndexHandler(indexTemplate *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		indexTemplate.Execute(w, nil)
+		err := indexTemplate.Execute(w, nil)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			logrus.WithError(err).Error("Error executing template.")
+			return
+		}
 	}
 }
 
@@ -51,15 +56,12 @@ func ViewHandler(viewTemplate, notFoundTemplate *template.Template) http.Handler
 			return
 		}
 
-		viewTemplate.Execute(w, struct {
-			ID       string
-			Ext      string
-			Filename string
-		}{
-			ID:       id,
-			Ext:      fileInfo.Extension,
-			Filename: fileInfo.Filename,
-		})
+		err = viewTemplate.Execute(w, fileInfo)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			logrus.WithError(err).Error("Error executing template.")
+			return
+		}
 	}
 }
 
