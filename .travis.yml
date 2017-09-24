@@ -9,6 +9,7 @@ go:
 install:
   - go get github.com/go-chi/chi
   - go get github.com/sirupsen/logrus
+  - go get github.com/gorilla/csrf
 
 script:
   - go test github.com/omar-h/goimage
