@@ -10,11 +10,11 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/gorilla/csrf"
 	"github.com/sirupsen/logrus"
 )
 
 var (
-	// configFilePath holds the
 	configFilePath = flag.String("config", "./config.json", "-config <config-path>")
 	debug          = flag.Bool("debug", false, "-debug <true/false>")
 	config         *Config
@@ -34,19 +34,19 @@ func init() {
 		return
 	}
 
-	err = os.MkdirAll(config.TemplateDirectory, 644)
+	err = os.MkdirAll(config.Directories.Template, 644)
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to create template directory.")
 		return
 	}
 
-	err = os.MkdirAll(config.PublicDirectory, 644)
+	err = os.MkdirAll(config.Directories.Public, 644)
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to create public directory.")
 		return
 	}
 
-	err = os.MkdirAll(config.ImageDirectory, 644)
+	err = os.MkdirAll(config.Directories.Image, 644)
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to create image directory.")
 		return
@@ -65,7 +65,7 @@ func main() {
 		router.Use(middleware.Logger)
 	}
 
-	templates, err := template.ParseGlob(config.TemplateDirectory + "*.html")
+	templates, err := template.ParseGlob(config.Directories.Template + "*.html")
 	if err != nil {
 		logrus.WithError(err).Fatal("Failed to parse templates.")
 		return
@@ -91,8 +91,18 @@ func main() {
 
 	router.Get("/", IndexHandler(indexTemplate))
 	router.Get("/{id}/", ViewHandler(viewTemplate, notFoundTemplate))
-	router.Post("/post/", UploadHandler)
-	FileServer(router, "/", http.Dir(config.PublicDirectory))
+	router.Post("/upload/", UploadHandler)
+	FileServer(router, "/", http.Dir(config.Directories.Public))
 
-	http.ListenAndServe(":"+strconv.Itoa(config.Port), router)
+	if config.CSRF.Enabled {
+		http.ListenAndServe(":"+strconv.Itoa(config.Port), csrf.Protect(
+			[]byte(config.CSRF.AuthKey),
+			csrf.CookieName("_csrf"),
+			csrf.FieldName("_csrf"),
+			csrf.HttpOnly(config.CSRF.HTTPOnly),
+			csrf.Secure(config.CSRF.Secure),
+		)(router))
+	} else {
+		http.ListenAndServe(":"+strconv.Itoa(config.Port), router)
+	}
 }

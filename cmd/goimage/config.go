@@ -8,16 +8,21 @@ import (
 // Config holds the configuration options for the image server.
 type Config struct {
 	Port              int      `json:"port"`
-	Secure            bool     `json:"secure"`
-	AuthKey           string   `json:"32-byte-auth-key"`
-	AllowedMIMETypes  []string `json:"allowed-mime-types"`
-	AllowedExtensions []string `json:"allowed-extensions"`
-	ImageNameLength   int      `json:"image-name-length"`
-	MaxFileSize       int64    `json:"max-file-size"`
-	ImageDirectory    string   `json:"image-directory"`
-	TemplateDirectory string   `json:"template-directory"`
-	PublicDirectory   string   `json:"public-directory"`
-	CSRF              bool     `json:"csrf"`
+	AllowedMIMETypes  []string `json:"allowed_mime_types"`
+	AllowedExtensions []string `json:"allowed_extensions"`
+	ImageNameLength   int      `json:"image_name_length"`
+	MaxFileSize       int64    `json:"max_file_size"`
+	CSRF              struct {
+		Enabled  bool   `json:"enabled"`
+		AuthKey  string `json:"32_byte_auth_key"`
+		Secure   bool   `json:"secure"`
+		HTTPOnly bool   `json:"httpOnly"`
+	} `json:"csrf"`
+	Directories struct {
+		Image    string `json:"image"`
+		Template string `json:"template"`
+		Public   string `json:"public"`
+	} `json:"directories"`
 }
 
 // ParseConfig parses the passed filepath and returns a new Config.

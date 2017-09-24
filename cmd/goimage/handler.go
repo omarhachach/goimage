@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/gorilla/csrf"
 	"github.com/omar-h/goimage"
 	"github.com/omar-h/goimage/utils"
 	"github.com/sirupsen/logrus"
@@ -29,7 +30,9 @@ func FileServer(r chi.Router, path string, root http.FileSystem) {
 // IndexHandler serves the index at the index route.
 func IndexHandler(indexTemplate *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		err := indexTemplate.Execute(w, nil)
+		err := indexTemplate.Execute(w, map[string]interface{}{
+			csrf.TemplateTag: csrf.TemplateField(r),
+		})
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			logrus.WithError(err).Error("Error executing template.")
@@ -43,7 +46,7 @@ func IndexHandler(indexTemplate *template.Template) http.HandlerFunc {
 func ViewHandler(viewTemplate, notFoundTemplate *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
-		fileInfo, err := goimage.GetFileInfo(config.ImageDirectory, id)
+		fileInfo, err := goimage.GetFileInfo(config.Directories.Image, id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			logrus.WithError(err).Error("Error getting file info.")
@@ -102,7 +105,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	for id == "" {
 		id = utils.GenerateName(config.ImageNameLength)
 
-		fileInfo, err := goimage.GetFileInfo(config.ImageDirectory, id)
+		fileInfo, err := goimage.GetFileInfo(config.Directories.Image, id)
 		if err != nil {
 			logrus.WithError(err).Error("Error getting file info.")
 			return
@@ -113,7 +116,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	goimage.MoveFile(file, config.ImageDirectory+id+"."+ext)
+	goimage.MoveFile(file, config.Directories.Image+id+"."+ext)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		logrus.WithError(err).Error("Error moving file.")
