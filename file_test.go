@@ -2,7 +2,6 @@ package goimage
 
 import (
 	"fmt"
-	"mime/multipart"
 	"net/textproto"
 	"os"
 	"testing"
@@ -34,26 +33,22 @@ func TestGetFileBasename(t *testing.T) {
 
 func TestGetFileExtension(t *testing.T) {
 	tests := []struct {
-		Header   *multipart.FileHeader
+		Filename string
 		Expected string
 	}{
 		{
-			Header: &multipart.FileHeader{
-				Filename: "testname.png",
-			},
+			Filename: "filename.png",
 			Expected: "png",
 		},
 		{
-			Header: &multipart.FileHeader{
-				Filename: "testname.jpeg",
-			},
+			Filename: "testname.jpeg",
 			Expected: "jpeg",
 		},
 	}
 
 	for i, test := range tests {
 		errorPrefix := fmt.Sprintf("Error [%v]: ", i)
-		actual := GetFileExtension(test.Header)
+		actual := GetFileExtension(test.Filename)
 		if actual != test.Expected {
 			t.Errorf(errorPrefix+"Expected %v, got %v.", test.Expected, actual)
 		}
