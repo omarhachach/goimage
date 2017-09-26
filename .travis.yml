@@ -4,19 +4,15 @@ os:
   - linux
 
 go:
-  - 1.8.3
-  - 1.7.6
+  - 1.9
 
 install:
-  - go get github.com/gorilla/mux
+  - go get github.com/go-chi/chi
+  - go get github.com/sirupsen/logrus
   - go get github.com/gorilla/csrf
-
-before_script:
-  - go fmt github.com/omar-h/goimage
-  - go fmt github.com/omar-h/goimage/util
 
 script:
   - go test github.com/omar-h/goimage
-  - go test github.com/omar-h/goimage/util
-  - go build github.com/omar-h/goimage
-  - go build github.com/omar-h/goimage/util
+  - go test github.com/omar-h/goimage/utils
+  - go test github.com/omar-h/goimage/cmd/goimage
+  - go build github.com/omar-h/goimage/cmd/goimage
