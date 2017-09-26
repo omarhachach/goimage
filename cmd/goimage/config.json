@@ -1,0 +1,36 @@
+{
+    "port": 8080,
+    "image_name_length": 4,
+    "max_file_size": 20000000,
+    "allowed_mime_types": [
+      "image/x-icon",
+      "image/jpeg",
+      "image/pjpeg",
+      "image/png",
+      "image/tiff",
+      "image/x-tiff",
+      "image/webp",
+      "image/gif"
+    ],
+    "allowed_extensions": [
+      "png",
+      "jpeg",
+      "jpg",
+      "jiff",
+      "ico",
+      "gif",
+      "tif",
+      "webp"
+    ],
+    "directories": {
+      "image": "public/",
+      "template": "templates/",
+      "public": "public/"
+    },
+    "csrf": {
+      "enabled": true,
+      "32_byte_auth_key": "62caed6a7842b5470c2e89693f92c9ba",
+      "secure": false,
+      "httpOnly": true
+    }
+  }
