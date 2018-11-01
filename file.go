@@ -36,12 +36,13 @@ func NewFile(file multipart.File, fileHeader *multipart.FileHeader) *File {
 // Place will move the file onto a specific location.
 // Returns os package errors. (os.ErrFileExist and os.ErrPermission)
 func (f *File) Place(location string) error {
-	_, err := os.Stat(location + f.Fullname)
+	fullpath := filepath.Join(location, f.Fullname)
+	_, err := os.Stat(fullpath)
 	if !os.IsNotExist(err) {
 		return os.ErrExist
 	}
 
-	file, err := os.OpenFile(location+f.Fullname, os.O_WRONLY|os.O_CREATE, 0644)
+	file, err := os.OpenFile(fullpath, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}
