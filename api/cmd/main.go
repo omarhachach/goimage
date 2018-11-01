@@ -13,7 +13,6 @@ func main() {
 
 	r.Use(
 		middleware.Recoverer,
-		middleware.Logger,
 	)
 
 	r.Post("/upload", api.UploadHandler)
