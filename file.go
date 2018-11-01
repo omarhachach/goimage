@@ -2,88 +2,56 @@ package goimage
 
 import (
 	"io"
-	"io/ioutil"
 	"mime/multipart"
-	"net/textproto"
 	"os"
 	"path/filepath"
-	"strings"
+
+	"github.com/omar-h/goimage/utils"
 )
 
-// FileInfo holds info about a file.
-type FileInfo struct {
-	Basename  string
+// File holds a file.
+type File struct {
+	File      multipart.File
+	Header    multipart.FileHeader
+	Basename  string // Without extension
+	Fullname  string // With extension
 	Extension string
-	Filename  string
+	MIMEType  string
+	Size      int
 }
 
-// GetFileBasename returns the base file name of a given filename.
-// Eg. the file name without the extension.
-func GetFileBasename(filename string) (basename string) {
-	index := strings.LastIndex(filename, ".")
-	if index == -1 {
-		return filename
+// NewFile will create a new file from a multipart.FileHeader.
+func NewFile(file multipart.File, fileHeader multipart.FileHeader) *File {
+	return &File{
+		File:      file,
+		Header:    fileHeader,
+		Basename:  utils.GetFileBasename(fileHeader.Filename),
+		Fullname:  fileHeader.Filename,
+		Extension: filepath.Ext(fileHeader.Filename),
+		MIMEType:  fileHeader.Header["Content-Type"][0],
+		Size:      int(fileHeader.Size),
 	}
-
-	return filename[:index]
 }
 
-// GetFileInfo returns the existing files info.
-func GetFileInfo(dirname, filename string) (fileInfo *FileInfo, err error) {
-	existingFiles, err := ioutil.ReadDir(dirname)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, existingFile := range existingFiles {
-		name := existingFile.Name()
-		basename := GetFileBasename(name)
-
-		if basename == GetFileBasename(filename) {
-			return &FileInfo{
-				Basename:  basename,
-				Extension: GetFileExtension(name),
-				Filename:  name,
-			}, nil
-		}
-	}
-
-	return nil, nil
-}
-
-// GetFileExtension returns the given files extension.
-func GetFileExtension(filename string) (extension string) {
-	ext := filepath.Ext(filename)
-	if ext == "" {
-		return ext
-	}
-
-	return ext[1:]
-}
-
-// GetFileMIMEType get an image mime type.
-func GetFileMIMEType(header textproto.MIMEHeader) (MIMEType string) {
-	return header["Content-Type"][0]
-}
-
-// MoveFile copies a file to the given filepath.
-func MoveFile(file multipart.File, filepath string) (err error) {
-	f, err := os.OpenFile(filepath, os.O_WRONLY|os.O_CREATE, 0644)
+// Place will move the file onto a specific location.
+// Returns os package errors. (os.ErrFileExist and os.ErrPermission)
+func (f *File) Place(location string) error {
+	file, err := os.OpenFile(location+f.Fullname, os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}
 
-	defer f.Close()
+	defer file.Close()
 
-	_, err = io.Copy(f, file)
+	_, err = io.Copy(file, f.File)
 	if err != nil {
-		newErr := os.Remove(filepath)
-		if newErr != nil {
-			return newErr
-		}
-
 		return err
 	}
 
 	return nil
+}
+
+// Close will properly close the file.
+func (f *File) Close() error {
+	return f.File.Close()
 }
