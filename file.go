@@ -12,7 +12,7 @@ import (
 // File holds a file.
 type File struct {
 	File      multipart.File
-	Header    multipart.FileHeader
+	Header    *multipart.FileHeader
 	Basename  string // Without extension
 	Fullname  string // With extension
 	Extension string
@@ -21,7 +21,7 @@ type File struct {
 }
 
 // NewFile will create a new file from a multipart.FileHeader.
-func NewFile(file multipart.File, fileHeader multipart.FileHeader) *File {
+func NewFile(file multipart.File, fileHeader *multipart.FileHeader) *File {
 	return &File{
 		File:      file,
 		Header:    fileHeader,
@@ -49,6 +49,18 @@ func (f *File) Place(location string) error {
 	}
 
 	return nil
+}
+
+// GenerateName will generate a new name with a given length.
+func (f *File) GenerateName(len int) *File {
+	return f.GiveName(utils.GenerateName(len))
+}
+
+// GiveName will give the File a new name, and update the basename and fullname.
+func (f *File) GiveName(name string) *File {
+	f.Basename = name
+	f.Fullname = name + f.Extension
+	return f
 }
 
 // Close will properly close the file.
