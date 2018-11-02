@@ -4,26 +4,16 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/omar-h/goimage"
+	"github.com/omar-h/goimage/api/config"
 	"github.com/omar-h/goimage/utils"
 )
 
-var allowedExts = []string{
-	".png",
-	".jpg",
-	".jpeg",
-	".jiff",
-	".ico",
-	".gif",
-	".tif",
-	".webp",
-}
-
-const maxFileSize = 20 << 18 // 5 MB
-
 // UploadHandler handles the "/upload" route.
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
-	r.ParseMultipartForm(maxFileSize)
+	r.ParseMultipartForm(config.Cfg.FileBufferSize)
 
 	f, handler, err := r.FormFile("image")
 	if err != nil {
@@ -38,22 +28,23 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	file := goimage.NewFile(f, handler)
 	defer file.Close()
 
-	if file.Size > maxFileSize {
+	if file.Size > config.Cfg.MaxFileSize {
 		RenderError(w, ErrFileTooLarge)
 		return
 	}
 
-	if !utils.ContainsString(file.Extension, allowedExts) {
+	if !utils.ContainsString(file.Extension, config.Cfg.AllowedExtensions) {
 		RenderError(w, ErrFileType)
 		return
 	}
 
-	err = file.GenerateName(6).Place("img/")
+	err = file.GenerateName(config.Cfg.NameLength).Place(config.Cfg.FileUploadLocation)
 	for err != nil {
 		if err == os.ErrExist {
-			err = file.GenerateName(6).Place("img/")
+			err = file.GenerateName(config.Cfg.NameLength).Place(config.Cfg.FileUploadLocation)
 		} else {
 			RenderError(w, ErrInternal)
+			logrus.WithError(err).Error("An error occured while placing the image.")
 			return
 		}
 	}
