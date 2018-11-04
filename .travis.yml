@@ -11,9 +11,7 @@ go:
   - "1.9"
 
 install:
-  - go get github.com/go-chi/chi
-  - go get github.com/sirupsen/logrus
-  - go get github.com/unrolled/render
+  - go get -t -v ./...
 
 script:
   - go test github.com/omarhachach/goimage
