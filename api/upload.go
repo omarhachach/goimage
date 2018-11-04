@@ -4,9 +4,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/omar-h/goimage"
-	"github.com/omar-h/goimage/api/config"
-	"github.com/omar-h/goimage/utils"
+	"github.com/omarhachach/goimage"
+	"github.com/omarhachach/goimage/api/config"
+	"github.com/omarhachach/goimage/utils"
 	"github.com/sirupsen/logrus"
 )
 

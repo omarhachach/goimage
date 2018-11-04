@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/omar-h/goimage/utils"
+	"github.com/omarhachach/goimage/utils"
 )
 
 // File holds a file.

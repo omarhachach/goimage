@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/omar-h/goimage"
+	"github.com/omarhachach/goimage"
 	"github.com/unrolled/render"
 )
 

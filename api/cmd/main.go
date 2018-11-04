@@ -8,8 +8,8 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
-	"github.com/omar-h/goimage/api"
-	"github.com/omar-h/goimage/api/config"
+	"github.com/omarhachach/goimage/api"
+	"github.com/omarhachach/goimage/api/config"
 	"github.com/sirupsen/logrus"
 )
 
