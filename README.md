@@ -75,7 +75,7 @@ You can do this two ways; either by using go get, or git clone.
 
 **Not recommended for production use.**
 
-Note: Requires Go installed on the system.
+Note: Requires Go 1.9 or greater installed on the system.
 
 **Git Clone**
 
