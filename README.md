@@ -1,13 +1,13 @@
 ## goimage - A simple image uploader/server
-[![Travis branch](https://img.shields.io/travis/omar-h/goimage/master.svg?style=flat-square)](https://travis-ci.org/omar-h/goimage)
-[![GitHub tag](https://img.shields.io/github/release/omar-h/goimage.svg?style=flat-square)](https://github.com/omarhach/goimage/releases)
-[![Report Card](https://img.shields.io/badge/report%20card-a%2B-c0392b.svg?style=flat-square)](https://goreportcard.com/report/github.com/omarhach/goimage)
+[![Travis branch](https://img.shields.io/travis/omarhachach/goimage/master.svg?style=flat-square)](https://travis-ci.org/omarhachach/goimage)
+[![GitHub tag](https://img.shields.io/github/release/omarhachach/goimage.svg?style=flat-square)](https://github.com/omarhachach/goimage/releases)
+[![Report Card](https://img.shields.io/badge/report%20card-a%2B-c0392b.svg?style=flat-square)](https://goreportcard.com/report/github.com/omarhachach/goimage)
 ![Powered By](https://img.shields.io/badge/powered%20by-go-blue.svg?style=flat-square)
-[![License](https://img.shields.io/badge/license-MIT%20License-1abc9c.svg?style=flat-square)](https://github.com/omarhach/goimage/blob/master/LICENSE.txt)
+[![License](https://img.shields.io/badge/license-MIT%20License-1abc9c.svg?style=flat-square)](https://github.com/omarhachach/goimage/blob/master/LICENSE.txt)
 
 Goimage is a simple, fully functional, go server for handling image uploads. It is fully standalone, but can be put behind a reverse-proxy.
 
-[Releases](https://github.com/omarhach/goimage/releases) | [Docs](https://godoc.org/github.com/omarhach/goimage)
+[Releases](https://github.com/omarhachach/goimage/releases) | [Docs](https://godoc.org/github.com/omarhachach/goimage)
 
 ## Menu
 * [Features](#features)
@@ -24,7 +24,7 @@ Goimage is a simple, fully functional, go server for handling image uploads. It 
 
 ## Getting Started
 
-Download the latest [release](https://github.com/omarhach/goimage/releases) for your platform, and extract the files.
+Download the latest [release](https://github.com/omarhachach/goimage/releases) for your platform, and extract the files.
 
 Create a config.json file in the root directory. Example:
 ```JSON
@@ -80,7 +80,7 @@ Note: Requires Go 1.9 or greater installed on the system.
 **Git Clone**
 
 ```BASH
-git clone https://github.com/omarhach/goimage.git
+git clone https://github.com/omarhachach/goimage.git
 cd goimage/api/cmd
 go build .
 ./goimage
@@ -90,8 +90,8 @@ go build .
 
 Note: You need to have the [GOPATH](https://golang.org/doc/code.html#GOPATH) env variable set.
 ```BASH
-go get github.com/omarhach/goimage
-cd $GOPATH/src/github.com/omarhach/goimage/cmd/goimage
+go get github.com/omarhachach/goimage
+cd $GOPATH/src/github.com/omarhachach/goimage/cmd/goimage
 go build .
 ./goimage
 ```

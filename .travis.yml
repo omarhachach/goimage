@@ -16,6 +16,6 @@ install:
   - go get github.com/unrolled/render
 
 script:
-  - go test github.com/omarhach/goimage
-  - go test github.com/omarhach/goimage/utils
-  - go build github.com/omarhach/goimage/api/cmd
+  - go test github.com/omarhachach/goimage
+  - go test github.com/omarhachach/goimage/utils
+  - go build github.com/omarhachach/goimage/api/cmd
