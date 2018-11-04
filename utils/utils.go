@@ -2,15 +2,7 @@ package utils
 
 import (
 	"math/rand"
-	"time"
-)
-
-// Variables used for the GenerateName function
-const (
-	letterBytes   = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ1234567890"
-	letterIdxBits = 6
-	letterIdxMask = 1<<letterIdxBits - 1
-	letterIdxMax  = 63 / letterIdxBits
+	"strings"
 )
 
 // ContainsString checks if a string slice contains a string.
@@ -24,22 +16,24 @@ func ContainsString(item string, slice []string) (contains bool) {
 	return false
 }
 
-// GenerateName generates a name of the specified length.
-func GenerateName(length int) (name string) {
-	var src = rand.NewSource(time.Now().UnixNano())
+const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-	b := make([]byte, length)
-	for i, cache, remain := length-1, src.Int63(), letterIdxMax; i >= 0; {
-		if remain == 0 {
-			cache, remain = src.Int63(), letterIdxMax
-		}
-		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
-			b[i] = letterBytes[idx]
-			i--
-		}
-		cache >>= letterIdxBits
-		remain--
+// GenerateName generates a name of the specified length.
+func GenerateName(strLen int) string {
+	b := make([]byte, strLen)
+	for i := range b {
+		b[i] = letterBytes[rand.Intn(len(letterBytes))]
+	}
+	return string(b)
+}
+
+// GetFileBasename returns the base file name of a given filename.
+// Eg. the file name without the extension.
+func GetFileBasename(filename string) (basename string) {
+	index := strings.LastIndex(filename, ".")
+	if index == -1 {
+		return filename
 	}
 
-	return string(b)
+	return filename[:index]
 }

@@ -2,17 +2,20 @@ language: go
 
 os:
   - linux
+  - windows
+  - osx
 
 go:
-  - 1.9
+  - "1.11"
+  - "1.10"
+  - "1.9"
 
 install:
   - go get github.com/go-chi/chi
   - go get github.com/sirupsen/logrus
-  - go get github.com/gorilla/csrf
+  - go get github.com/unrolled/render
 
 script:
   - go test github.com/omar-h/goimage
   - go test github.com/omar-h/goimage/utils
-  - go test github.com/omar-h/goimage/cmd/goimage
-  - go build github.com/omar-h/goimage/cmd/goimage
+  - go build github.com/omar-h/goimage/api/cmd
