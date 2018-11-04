@@ -23,16 +23,17 @@ Goimage is a simple, fully functional, go server for handling image uploads. It 
 * More coming soon..
 
 ## Getting Started
-**Requires Go 1.9**
 
 Download the latest [release](https://github.com/omar-h/goimage/releases) for your platform, and extract the files.
 
-Create a config.json file in the root directory:
+Create a config.json file in the root directory. Example:
 ```JSON
 {
     "port": 8080,
-    "image-name-length": 4,
-    "max-file-size": 1,
+    "max-file-size": 5242880,
+    "name-length": 6,
+    "file-buffer-size": 1310720,
+    "file-upload-location": "./img/",
     "allowed_mime_types": [
         "image/x-icon",
         "image/jpeg",
@@ -52,18 +53,7 @@ Create a config.json file in the root directory:
         "gif",
         "tif",
         "webp"
-    ],
-    "directories": {
-        "image": "public/",
-        "template": "templates/",
-        "public": "public/"
-    },
-    "csrf": {
-        "enabled": true,
-        "32_byte_auth_key": "62caed6a7842b5470c2e89693f92c9ba",
-        "secure": false,
-        "httpOnly": true
-    }
+    ]
 }
 ```
 
@@ -91,14 +81,14 @@ Note: Requires Go installed on the system.
 
 ```BASH
 git clone https://github.com/Omar-H/goimage.git
-cd goimage/cmd/goimage
+cd goimage/api/cmd
 go build .
 ./goimage
 ```
 
 **Go Get**
 
-Note: You need to have GOPATH set.
+Note: You need to have the [GOPATH](https://golang.org/doc/code.html#GOPATH) env variable set.
 ```BASH
 go get github.com/Omar-H/goimage
 cd $GOPATH/src/github.com/Omar-H/goimage/cmd/goimage
@@ -107,9 +97,9 @@ go build .
 ```
 
 ## Contributing
-Please check out our [wiki](https://github.com/omar-h/goimage/wiki) for more information about contributing.
+Please check out our the CONTIRBUTING file for more information about contributing.
 
 You can contact the author on Discord: Omar H.#6299 or via email: [contact@omarh.net](mailto:contact@omarh.net).
 
 If you feel something is missing, or you find a bug, you can feel free to open an issue or a pull request.
-We will check your issue or pull request as soon as possible.
+I will check your issue or pull request as soon as possible.
