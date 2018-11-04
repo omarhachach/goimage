@@ -4,12 +4,18 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/omar-h/goimage"
 	"github.com/omar-h/goimage/api/config"
 	"github.com/omar-h/goimage/utils"
+	"github.com/sirupsen/logrus"
 )
+
+// UploadSuccess is the response type for a succesful upload.
+type UploadSuccess struct {
+	Success bool          `json:"success,omitempty"`
+	Code    int           `json:"code,omitempty"`
+	File    *goimage.File `json:"file,omitempty"`
+}
 
 // UploadHandler handles the "/upload" route.
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,5 +55,5 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	http.Redirect(w, r, "/"+file.Basename+"/", http.StatusSeeOther)
+	RenderSuccess(w, file)
 }

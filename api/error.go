@@ -6,8 +6,9 @@ import (
 
 // ErrorResponse is the API error response format.
 type ErrorResponse struct {
-	Code  int    `json:"code,omitempty"`
-	Error string `json:"error,omitempty"`
+	Success bool   `json:"success,omitempty"`
+	Code    int    `json:"code,omitempty"`
+	Error   string `json:"error,omitempty"`
 }
 
 // This holds the default errors.
@@ -22,7 +23,8 @@ var (
 // NewError returns a new ErrorResponse
 func NewError(code int, err string) ErrorResponse {
 	return ErrorResponse{
-		Code:  code,
-		Error: err,
+		Success: false,
+		Code:    code,
+		Error:   err,
 	}
 }

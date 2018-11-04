@@ -11,13 +11,13 @@ import (
 
 // File holds a file.
 type File struct {
-	File      multipart.File
-	Header    *multipart.FileHeader
-	Basename  string // Without extension
-	Fullname  string // With extension
-	Extension string
-	MIMEType  string
-	Size      int
+	File      multipart.File        `json:"-"`
+	Header    *multipart.FileHeader `json:"-"`
+	Basename  string                `json:"basename,omitempty"` // Without extension
+	Fullname  string                `json:"fullname,omitempty"` // With extension
+	Extension string                `json:"extension,omitempty"`
+	MIMEType  string                `json:"mime_type,omitempty"`
+	Size      int                   `json:"size,omitempty"`
 }
 
 // NewFile will create a new file from a multipart.FileHeader.
