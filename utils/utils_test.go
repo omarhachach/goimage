@@ -53,3 +53,43 @@ func TestGenerateName(t *testing.T) {
 		}
 	}
 }
+
+func TestGetFileBasename(t *testing.T) {
+	type args struct {
+		filename string
+	}
+	tests := []struct {
+		name         string
+		args         args
+		wantBasename string
+	}{
+		{
+			name: "check filename with single period",
+			args: args{
+				filename: "hd739x.jpg",
+			},
+			wantBasename: "hd739x",
+		},
+		{
+			name: "check filename with two periods",
+			args: args{
+				filename: "hd739x.file.jpg",
+			},
+			wantBasename: "hd739x.file",
+		},
+		{
+			name: "check filename with no periods",
+			args: args{
+				filename: "hd739x",
+			},
+			wantBasename: "hd739x",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if gotBasename := GetFileBasename(tt.args.filename); gotBasename != tt.wantBasename {
+				t.Errorf("GetFileBasename() = %v, want %v", gotBasename, tt.wantBasename)
+			}
+		})
+	}
+}
