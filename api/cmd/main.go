@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -21,9 +20,7 @@ func init() {
 }
 
 func main() {
-	fmt.Println(*cfgPath)
 	configStr, err := config.ReadConfig(*cfgPath)
-	fmt.Println(configStr)
 	if err != nil {
 		logrus.WithError(err).Warn("Failed to read config, using default.")
 	}
