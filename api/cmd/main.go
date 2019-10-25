@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -20,14 +21,16 @@ func init() {
 }
 
 func main() {
-	config, err := config.ReadConfig(*cfgPath)
+	fmt.Println(*cfgPath)
+	configStr, err := config.ReadConfig(*cfgPath)
+	fmt.Println(configStr)
 	if err != nil {
 		logrus.WithError(err).Warn("Failed to read config, using default.")
 	}
 
-	err = os.MkdirAll(config.FileUploadLocation, 0644)
+	err = os.MkdirAll(configStr.FileUploadLocation, 0644)
 	if err != nil && err != os.ErrExist {
-		logrus.WithError(err).Fatal("Failed to create upload location.")
+		logrus.WithError(err).Fatal("Failed to create upload location: " + configStr.FileUploadLocation)
 	}
 
 	r := chi.NewRouter()
@@ -38,6 +41,6 @@ func main() {
 
 	r.Post("/upload", api.UploadHandler)
 
-	logrus.Infof("Now starting the server on port %v.", config.Port)
-	http.ListenAndServe(":"+strconv.Itoa(config.Port), r)
+	logrus.Infof("Now starting the server on port %v.", configStr.Port)
+	http.ListenAndServe(":"+strconv.Itoa(configStr.Port), r)
 }
